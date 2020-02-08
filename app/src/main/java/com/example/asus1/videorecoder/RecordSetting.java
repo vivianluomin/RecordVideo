@@ -1,6 +1,8 @@
 package com.example.asus1.videorecoder;
 
-public class RecordSetting {
+import java.io.Serializable;
+
+public class RecordSetting implements Serializable{
 
     public  enum Filter{
         normal,

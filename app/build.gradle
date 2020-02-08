@@ -13,7 +13,7 @@ android {
             cmake {
                 cppFlags ""
             }
-            ndk{
+            ndk {
                 abiFilters "armeabi-v7a"
             }
         }

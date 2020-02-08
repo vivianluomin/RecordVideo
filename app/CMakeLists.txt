@@ -25,6 +25,10 @@ add_library(FFmpegMuxer
         SHARED
         src/main/cpp/FFmpegMuxer)
 
+add_library(OpenGLHelper
+         SHARED
+         src/main/cpp/OpenGLHelper)
+
 find_library(
         log-lib
         log)
@@ -84,11 +88,14 @@ include_directories(libs/include)
 # 告诉编译器生成native-lib库需要链接的库
 # native-lib库需要依赖avcodec、avfilter等库
 target_link_libraries(FFmpegMuxer
+        OpenGLHelper
         avcodec
         avfilter
         avformat
         avutil
         swresample
         swscale
-        -landroid
+        android
+        GLESv2
+        EGL
         ${log-lib})
