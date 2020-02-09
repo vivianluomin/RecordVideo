@@ -72,10 +72,29 @@ bool OpenGLThread::initOpenGlES(ANativeWindow *window) {
 
 }
 
-bool OpenGLThread::renderUpdate(float *mat) {
+bool OpenGLThread::renderUpdate(int textId,float *mat) {
 
 }
 
 bool OpenGLThread::destoryOpenGLES() {
+    if (display != EGL_NO_DISPLAY) {
+        //解绑display上的eglContext和surface
+        eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
+        //销毁surface 和 eglContext
+        if (surface != EGL_NO_SURFACE) {
+            eglDestroySurface(display, surface);
+            surface = EGL_NO_SURFACE;
+        }
+
+        if (context != EGL_NO_CONTEXT) {
+            eglDestroyContext(display, context);
+            context = EGL_NO_CONTEXT;
+        }
+
+        if (display != EGL_NO_DISPLAY) {
+            eglTerminate(display);
+            display = EGL_NO_DISPLAY;
+        }
+    }
 }

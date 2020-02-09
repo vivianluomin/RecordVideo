@@ -19,20 +19,22 @@
 #include <GLES2/gl2ext.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include "TextureDrawer.h"
 
 //这三行主要是用来定义LOGI和LOGE的，看到原函数多复杂了吧，用这个会疯掉的
-#define LOG_TAG "ndk-build"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define LOG_GL "OpenGLThread"
+//#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_GL, __VA_ARGS__)
+//#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_GL, __VA_ARGS__)
 
 class OpenGLThread{
 private:EGLDisplay  display;
         EGLContext context;
         EGLSurface surface;
         float *mat;
+        TextureDrawer drawer;
 public:
     bool initOpenGlES(ANativeWindow *nativeWindow);
-    bool renderUpdate(float* mat);
+    bool renderUpdate(int textId, float *mat);
     bool destoryOpenGLES();
 
 };
