@@ -2,7 +2,16 @@
 // Created by asus1 on 2020/2/9.
 //
 
-#include "TextureDrawer.h"
+
+#include "include/TextureDrawer.h"
+
+#ifdef __cplusplus
+
+TextureDrawer::TextureDrawer() {
+    initVertexData();
+    initPrograme();
+    initFragmentData();
+}
 
 
 void TextureDrawer::initVertexData() {
@@ -86,7 +95,7 @@ int TextureDrawer::loadShader(int shaderType,const char* shaderSource) {
         glCompileShader(shader);
         glGetShaderiv(shader,GL_COMPILE_STATUS,&result);
         if(result != GL_NO_ERROR){
-            LOGE("Could not compile shader "+shaderType);
+            LOGE("Could not compile shader %d",shaderType);
             char *log;
             glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&length);
             log=(char *)malloc(length);
@@ -127,10 +136,12 @@ void TextureDrawer::draw(int textId, float *sTMatrix) {
 int TextureDrawer::checkGLError(std::string info) {
     int error;
     if((error = glGetError())!=GL_NO_ERROR){
-        LOGE("glError,the info is %s,the error is %d", info,error);
+        LOGE("glError,the info is %s,the error is %d", info.c_str(),error);
         return -1;
     }
 
     return 0;
 
 }
+
+#endif

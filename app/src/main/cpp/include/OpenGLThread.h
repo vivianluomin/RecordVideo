@@ -2,8 +2,10 @@
 // Created by asus1 on 2020/2/8.
 //
 
+
 #ifndef VIDEORECODER_OPENGLTHREAD_H
 #define VIDEORECODER_OPENGLTHREAD_H
+
 
 //C++与java交互的实现
 #include <jni.h>
@@ -19,25 +21,53 @@
 #include <GLES2/gl2ext.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+
+#ifdef __cplusplus
+//extern "C" {
+//#endif
 #include "TextureDrawer.h"
 
-//这三行主要是用来定义LOGI和LOGE的，看到原函数多复杂了吧，用这个会疯掉的
-#define LOG_GL "OpenGLThread"
-//#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_GL, __VA_ARGS__)
-//#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_GL, __VA_ARGS__)
+#include "LOG.h"
+
+#define FILTER_NORMAL 0
+#define FILTER_DRAK 1
+#define FILTER_FUDIAO 2
+#define FILTER_MOHU 3
+#define FILTER_MOPI 4
+
+
+void* start(void *glThread);
+
 
 class OpenGLThread{
-private:EGLDisplay  display;
-        EGLContext context;
-        EGLSurface surface;
-        float *mat;
-        TextureDrawer drawer;
 public:
-    bool initOpenGlES(ANativeWindow *nativeWindow);
+    EGLDisplay  display;
+    EGLContext context;
+    EGLSurface surface;
+    float *MVPMat = NULL;
+    int textureId;
+
+    TextureDrawer *drawer;
+
+    pthread_t pid;
+    ANativeWindow *window;
+    bool threadStart = 0;
+    pthread_mutex_t lock;
+    bool render = false;
+public:
+    TextureDrawer * createTextureDrawer(int textureType);
+    void startOpenGLThread(ANativeWindow *nativeWindow);
+    bool initOpenGlES();
     bool renderUpdate(int textId, float *mat);
     bool destoryOpenGLES();
 
 };
+
+
+//#ifdef __cplusplus
+//}
+#endif
+
 
 
 

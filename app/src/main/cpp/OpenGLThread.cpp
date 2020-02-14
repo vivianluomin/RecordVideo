@@ -2,10 +2,73 @@
 // Created by asus1 on 2020/2/8.
 //
 
-#include <OpenGLThread.h>
-#include "OpenGLThread.h"
+#include "include/OpenGLThread.h"
+#include <pthread.h>
+#include "TextureDrawer.h"
 
-bool OpenGLThread::initOpenGlES(ANativeWindow *window) {
+void*  start(void *gl) {
+
+    OpenGLThread *glThread = static_cast<OpenGLThread *>(gl);
+
+    int ret = glThread->initOpenGlES();
+    if(ret != 0){
+        return NULL;
+    }
+#ifdef __cplusplus
+    glThread->drawer = new TextureDrawer();
+#endif
+
+    pthread_mutex_init(&glThread->lock,NULL);
+    glThread->threadStart = true;
+    while (glThread->threadStart){
+        if(!glThread->render){
+            pthread_mutex_lock(&glThread->lock);
+        }
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glViewport(0,0,720,1280);
+#ifdef __cplusplus
+        glThread->drawer->draw(glThread->textureId,glThread->MVPMat);
+#endif
+        eglSwapBuffers(glThread->display,glThread->surface);
+        glThread->render = false;
+    }
+
+
+    return NULL;
+
+}
+
+
+void OpenGLThread::startOpenGLThread(ANativeWindow *nativeWindow) {
+
+    window = nativeWindow;
+    pthread_create(&pid,NULL,start,this);
+}
+
+TextureDrawer* OpenGLThread::createTextureDrawer(int textureType) {
+    TextureDrawer *drawer;
+    switch (textureType){
+        case FILTER_NORMAL:
+            drawer = new TextureDrawer();
+            break;
+
+        case FILTER_DRAK:
+            break;
+
+        case FILTER_FUDIAO:
+            break;
+        case FILTER_MOHU:
+            break;
+        case FILTER_MOPI:
+            break;
+    }
+
+    return drawer;
+}
+
+
+bool OpenGLThread::initOpenGlES() {
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if(display == EGL_NO_DISPLAY){
         LOGE("eglGetDisplay error");
@@ -67,16 +130,24 @@ bool OpenGLThread::initOpenGlES(ANativeWindow *window) {
         return -1;
     }
 
-    return -1;
+    return 0;
 
 
 }
 
-bool OpenGLThread::renderUpdate(int textId,float *mat) {
-
+bool OpenGLThread::renderUpdate(int textId,float *mat){
+    textureId = textId;
+    if(MVPMat != NULL){
+        delete(MVPMat);
+    }
+    MVPMat = mat;
+    render = true;
+    pthread_mutex_unlock(&lock);
 }
 
 bool OpenGLThread::destoryOpenGLES() {
+    pthread_mutex_unlock(&lock);
+    threadStart = false;
     if (display != EGL_NO_DISPLAY) {
         //解绑display上的eglContext和surface
         eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -96,5 +167,8 @@ bool OpenGLThread::destoryOpenGLES() {
             eglTerminate(display);
             display = EGL_NO_DISPLAY;
         }
+
+        delete(drawer);
+        delete(MVPMat);
     }
 }

@@ -2,7 +2,7 @@
 // Created by luomin on 2019/4/28.
 //
 
-#include "FFmpegMuxer.h"
+#include "include/FFmpegMuxer.h"
 
 FFmpegMuxer::FFmpegMuxer(const char* path) {
     mPath = path;

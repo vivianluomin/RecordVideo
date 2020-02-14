@@ -23,11 +23,20 @@ set(distribution_DIR ../../../../libs)
 # 库源码文件：src/main/cpp/native-lib.cpp
 add_library(FFmpegMuxer
         SHARED
-        src/main/cpp/FFmpegMuxer)
+        src/main/cpp/FFmpegMuxer.cpp)
+
+add_library(TextureDrawer
+            SHARED
+            src/main/cpp/TextureDrawer.cpp)
 
 add_library(OpenGLHelper
          SHARED
-         src/main/cpp/OpenGLHelper)
+         src/main/cpp/OpenGLHelper.cpp)
+
+add_library(OpenGLThread
+            SHARED
+            src/main/cpp/OpenGLThread.cpp)
+
 
 find_library(
         log-lib
@@ -82,13 +91,14 @@ set_target_properties(swscale
         PROPERTIES IMPORTED_LOCATION
         ${distribution_DIR}/${ANDROID_ABI}/libswscale.so)
 
+
 # 引入头文件
 include_directories(libs/include)
+include_directories(src/main/cpp/include/)
 
 # 告诉编译器生成native-lib库需要链接的库
 # native-lib库需要依赖avcodec、avfilter等库
 target_link_libraries(FFmpegMuxer
-        OpenGLHelper
         avcodec
         avfilter
         avformat
@@ -99,3 +109,31 @@ target_link_libraries(FFmpegMuxer
         GLESv2
         EGL
         ${log-lib})
+
+
+target_link_libraries(
+         TextureDrawer
+         android
+         GLESv2
+         EGL
+         ${log-lib})
+
+target_link_libraries(
+        OpenGLHelper
+        OpenGLThread
+        TextureDrawer
+        android
+        GLESv2
+        EGL
+        ${log-lib})
+
+
+target_link_libraries(
+         OpenGLThread
+         android
+         GLESv2
+         EGL
+         TextureDrawer
+         ${log-lib})
+
+

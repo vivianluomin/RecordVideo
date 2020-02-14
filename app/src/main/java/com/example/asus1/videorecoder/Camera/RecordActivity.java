@@ -48,6 +48,7 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         initTextureId();
+        mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(), RecordSetting.Filter.normal);
         mSurfaceTexture = new SurfaceTexture(mTextId);
         mSurfaceTexture.setOnFrameAvailableListener(this);
         mCamera.startPreview(mSurfaceTexture);
@@ -83,6 +84,9 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-
+        float[] mvp = new float[16];
+        surfaceTexture.updateTexImage();
+        surfaceTexture.getTransformMatrix(mvp);
+        mOpenGLHelper.render(mTextId,mvp);
     }
 }
