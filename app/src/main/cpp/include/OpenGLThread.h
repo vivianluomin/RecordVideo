@@ -6,6 +6,9 @@
 #ifndef VIDEORECODER_OPENGLTHREAD_H
 #define VIDEORECODER_OPENGLTHREAD_H
 
+#include "TextureDrawer.h"
+#include "LOG.h"
+#include <pthread.h>
 
 //C++与java交互的实现
 #include <jni.h>
@@ -21,13 +24,6 @@
 #include <GLES2/gl2ext.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-
-#ifdef __cplusplus
-//extern "C" {
-//#endif
-#include "TextureDrawer.h"
-
-#include "LOG.h"
 
 #define FILTER_NORMAL 0
 #define FILTER_DRAK 1
@@ -46,9 +42,7 @@ public:
     EGLSurface surface;
     float *MVPMat = NULL;
     int textureId;
-
     TextureDrawer *drawer;
-
     pthread_t pid;
     ANativeWindow *window;
     bool threadStart = 0;
@@ -63,10 +57,6 @@ public:
 
 };
 
-
-//#ifdef __cplusplus
-//}
-#endif
 
 
 

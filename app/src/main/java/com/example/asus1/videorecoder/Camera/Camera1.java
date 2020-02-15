@@ -53,11 +53,11 @@ public class Camera1 implements CameraListener {
             meteringAreas.add(new Camera.Area(areaRect1, 600)); // set weight to 60%
             Rect areaRect2 = new Rect(800, -1000, 1000, -800);  // specify an area in upper right of image
             meteringAreas.add(new Camera.Area(areaRect2, 400)); // set weight to 40%
-            params.setMeteringAreas(meteringAreas);
+            //params.setMeteringAreas(meteringAreas);
         }
 
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        mCameraDevice.setParameters(params);
+        //params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        //mCameraDevice.setParameters(params);
     }
 
     @Override

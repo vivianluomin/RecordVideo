@@ -5,8 +5,6 @@
 
 #include "include/TextureDrawer.h"
 
-#ifdef __cplusplus
-
 TextureDrawer::TextureDrawer() {
     initVertexData();
     initPrograme();
@@ -144,4 +142,3 @@ int TextureDrawer::checkGLError(std::string info) {
 
 }
 
-#endif

@@ -25,18 +25,13 @@ add_library(FFmpegMuxer
         SHARED
         src/main/cpp/FFmpegMuxer.cpp)
 
-add_library(TextureDrawer
-            SHARED
-            src/main/cpp/TextureDrawer.cpp)
 
 add_library(OpenGLHelper
          SHARED
-         src/main/cpp/OpenGLHelper.cpp)
-
-add_library(OpenGLThread
-            SHARED
-            src/main/cpp/OpenGLThread.cpp)
-
+         src/main/cpp/OpenGLHelper.cpp
+         src/main/cpp/OpenGLThread.cpp
+         src/main/cpp/TextureDrawer.cpp
+         )
 
 find_library(
         log-lib
@@ -111,29 +106,13 @@ target_link_libraries(FFmpegMuxer
         ${log-lib})
 
 
-target_link_libraries(
-         TextureDrawer
-         android
-         GLESv2
-         EGL
-         ${log-lib})
 
 target_link_libraries(
         OpenGLHelper
-        OpenGLThread
-        TextureDrawer
         android
         GLESv2
         EGL
         ${log-lib})
 
-
-target_link_libraries(
-         OpenGLThread
-         android
-         GLESv2
-         EGL
-         TextureDrawer
-         ${log-lib})
 
 

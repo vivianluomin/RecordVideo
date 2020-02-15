@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ public class MainActivity extends BaseActivity {
     private RecordSetting mRecordSettings;
     private TextView mRecordText;
     private boolean mHasPermission = false;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if(!mHasPermission){
+                    Log.d(TAG, "startRecord: "+mHasPermission);
                     return;
                 }
                 Intent intent =  new Intent(MainActivity.this, RecordActivity.class);
@@ -137,7 +141,6 @@ public class MainActivity extends BaseActivity {
         String[] permissions = new String[]{
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO
         };
         List<String> pers = new ArrayList<>();
@@ -152,6 +155,8 @@ public class MainActivity extends BaseActivity {
         if(pers.size()>0){
             ActivityCompat.requestPermissions(this,pers.toArray(new String[pers.size()]),
                     100);
+        }else {
+            mHasPermission = true;
         }
 
     }
@@ -159,9 +164,12 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for(int i = 0;i<grantResults.length;i++){
+            Log.d(TAG, "onRequestPermissionsResult: "+permissions[i]);
             if(grantResults[i]!= PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this,getResources().
                         getText(R.string.requestPermission),Toast.LENGTH_SHORT).show();
+                mHasPermission = false;
+                return;
             }
             mHasPermission = true;
         }

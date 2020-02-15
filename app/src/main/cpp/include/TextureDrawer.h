@@ -12,8 +12,6 @@
 #include <string.h>
 #include <string>
 #include <android/log.h>
-
-#include "OpenGLThread.h"
 #include "LOG.h"
 #include <malloc.h>
 

@@ -3,8 +3,6 @@
 //
 
 #include "include/OpenGLThread.h"
-#include <pthread.h>
-#include "TextureDrawer.h"
 
 void*  start(void *gl) {
 
@@ -12,12 +10,11 @@ void*  start(void *gl) {
 
     int ret = glThread->initOpenGlES();
     if(ret != 0){
+        LOGE("initOpenGL failed");
         return NULL;
     }
-#ifdef __cplusplus
-    glThread->drawer = new TextureDrawer();
-#endif
 
+    glThread->drawer = new TextureDrawer();
     pthread_mutex_init(&glThread->lock,NULL);
     glThread->threadStart = true;
     while (glThread->threadStart){
@@ -112,7 +109,7 @@ bool OpenGLThread::initOpenGlES() {
             EGL_NONE
     };
 
-    context = eglCreateContext(display,eglConfig,NULL,attrib_config_list);
+    context = eglCreateContext(display,eglConfig,NULL,attrib_ctx_list);
     if(context == EGL_NO_CONTEXT){
         LOGE("elgCreateContext error");
         return -1;
@@ -143,6 +140,8 @@ bool OpenGLThread::renderUpdate(int textId,float *mat){
     MVPMat = mat;
     render = true;
     pthread_mutex_unlock(&lock);
+
+    return true;
 }
 
 bool OpenGLThread::destoryOpenGLES() {
@@ -171,4 +170,6 @@ bool OpenGLThread::destoryOpenGLES() {
         delete(drawer);
         delete(MVPMat);
     }
+
+    return true;
 }
