@@ -1,13 +1,22 @@
 package com.example.asus1.videorecoder.OpenGL;
 
+import android.util.Log;
 import android.view.Surface;
 
+import com.example.asus1.videorecoder.Camera.OpenGLLifeListener;
 import com.example.asus1.videorecoder.RecordSetting;
 
 public class OpenGLHelper {
 
     static {
         System.loadLibrary("OpenGLHelper");
+    }
+
+    private OpenGLLifeListener mLifeListener;
+    private static final String TAG = "OpenGLHelper";
+
+    public OpenGLHelper(OpenGLLifeListener lifeListener){
+        mLifeListener = lifeListener;
     }
 
     private long mHandler;
@@ -37,6 +46,13 @@ public class OpenGLHelper {
     public void deatoryOpenGL(){
         if(mHandler != 0){
             destroyOpenGL(mHandler);
+        }
+    }
+
+    public void onOpenGLinitSuccess(){
+        Log.d(TAG, "onOpenGLinitSuccess: ");
+        if(mLifeListener != null){
+            mLifeListener.onOpenGLinitSuccess();
         }
     }
 

@@ -10,8 +10,6 @@
 #include "LOG.h"
 #include <pthread.h>
 
-//C++与java交互的实现
-#include <jni.h>
 //C++的string，默认导入的，会用到的，放着吧
 #include <string>
 //打log用的，下面会把这里面复杂的函数简化就是#define的那几行
@@ -35,6 +33,8 @@
 void* start(void *glThread);
 
 
+
+
 class OpenGLThread{
 public:
     EGLDisplay  display;
@@ -48,6 +48,11 @@ public:
     bool threadStart = 0;
     pthread_mutex_t lock;
     bool render = false;
+    jmethodID onOpenGLinitSucccess_method;
+    jobject openglHepler;
+
+public:
+    static JavaVM *JVMInstance;
 public:
     TextureDrawer * createTextureDrawer(int textureType);
     void startOpenGLThread(ANativeWindow *nativeWindow);

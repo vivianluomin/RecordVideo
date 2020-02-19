@@ -5,6 +5,25 @@
 
 #include "include/TextureDrawer.h"
 
+const static char vertexShaderSource[] =
+        "attribute vec4 aPosition;"
+                "varying vec2 vTextureCoord;"
+                "uniform mat4 uMvpMatrix;"
+                "void main(){"
+                "gl_Position = uMvpMatrix * aPosition;"
+                "vTextureCoord = (aPosition * 0.5+0.5).xy;"
+                "}";
+
+const static char fragmentShaderSource[] =
+        "#extension GL_OES_EGL_image_external : require\n"
+                "precision highp float;"
+                "varying vec2 vTextureCoord;"
+                "uniform samplerExternalOES uSampler;"
+                "void main(){"
+                "gl_FragColor = texture2D(uSampler,vTextureCoord);"  //纹理采样
+                "}";
+
+
 TextureDrawer::TextureDrawer() {
     initVertexData();
     initPrograme();
@@ -85,19 +104,19 @@ void TextureDrawer::initPrograme() {
 
 
 int TextureDrawer::loadShader(int shaderType,const char* shaderSource) {
-    int shader = glCreateShader(shaderType);
-    GLint length,result;
+    GLuint shader = glCreateShader(shaderType);
+    GLint length,result = GL_FALSE;
     if(shader!=0){
         length = strlen(shaderSource);
-        glShaderSource(shader,1,&shaderSource,&length);
+        glShaderSource(shader,1,&shaderSource,NULL);
         glCompileShader(shader);
         glGetShaderiv(shader,GL_COMPILE_STATUS,&result);
-        if(result != GL_NO_ERROR){
-            LOGE("Could not compile shader %d",shaderType);
-            char *log;
+        if(!result){
+            LOGE("Could not compile shader %x",shaderType);
+            GLchar *log;
             glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&length);
-            log=(char *)malloc(length);
-            glGetShaderInfoLog(shader,length,&result,log);
+            log=(GLchar *)malloc(length);
+            glGetShaderInfoLog(shader,length,NULL,log);
             LOGE("get error %s: \n",log);
             free(log);
             glDeleteShader(shader);

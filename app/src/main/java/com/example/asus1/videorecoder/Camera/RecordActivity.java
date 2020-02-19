@@ -14,7 +14,10 @@ import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
 
-public class RecordActivity extends AppCompatActivity implements SurfaceHolder.Callback ,SurfaceTexture.OnFrameAvailableListener{
+public class RecordActivity extends AppCompatActivity
+        implements SurfaceHolder.Callback ,
+        SurfaceTexture.OnFrameAvailableListener,
+        OpenGLLifeListener{
 
     private SurfaceView mSurfaceView;
     private RecordSetting mRecordSetting;
@@ -36,7 +39,7 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
     private void init(){
         mSurfaceView = findViewById(R.id.surface_view);
         mSurfaceView.getHolder().addCallback(this);
-        mOpenGLHelper = new OpenGLHelper();
+        mOpenGLHelper = new OpenGLHelper(this);
 
     }
 
@@ -48,14 +51,11 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         initTextureId();
-        mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(), RecordSetting.Filter.normal);
-        mSurfaceTexture = new SurfaceTexture(mTextId);
-        mSurfaceTexture.setOnFrameAvailableListener(this);
-        mCamera.startPreview(mSurfaceTexture);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(), RecordSetting.Filter.normal);
 
     }
 
@@ -81,6 +81,15 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
                 GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_CLAMP_TO_EDGE);//设置T轴拉伸方式
 
     }
+
+
+    @Override
+    public void onOpenGLinitSuccess() {
+        mSurfaceTexture = new SurfaceTexture(mTextId);
+        mSurfaceTexture.setOnFrameAvailableListener(this);
+        mCamera.startPreview(mSurfaceTexture);
+    }
+
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {

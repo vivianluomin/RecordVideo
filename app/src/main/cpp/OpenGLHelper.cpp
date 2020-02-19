@@ -2,7 +2,6 @@
 // Created by asus1 on 2020/2/8.
 //
 
-#include <jni.h>
 #include "include/OpenGLThread.h"
 
 extern "C"
@@ -11,8 +10,11 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_initOpenGL(JNIEnv *env,
                                                                    jobject instance,
                                                                    jobject surface,jint filter){
     OpenGLThread *handler = new OpenGLThread();
-
     ANativeWindow *window = ANativeWindow_fromSurface(env,surface);
+    handler->openglHepler = env->NewGlobalRef(instance);
+    jclass openglHelper = env->GetObjectClass(instance);
+    jmethodID openglSucssess = env->GetMethodID(openglHelper,"onOpenGLinitSuccess","()V");
+    handler->onOpenGLinitSucccess_method = openglSucssess;
     handler->startOpenGLThread(window);
     return (jlong)handler;
 
@@ -58,5 +60,23 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_destroyOpenGL(JNIEnv *en
         return;
     }
     hand->destoryOpenGLES();
+}
+
+
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+
+    jint result = -1;
+
+    OpenGLThread::JVMInstance = jvm;
+
+    result = JNI_VERSION_1_4;
+    return result;
+}
+
+JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
+{
+    //TODO-
+    OpenGLThread::JVMInstance = nullptr;
 }
 

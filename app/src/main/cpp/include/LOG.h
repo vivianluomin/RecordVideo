@@ -6,8 +6,9 @@
 #define VIDEORECODER_LOG_H
 
 #include <android/log.h>
+#include <jni.h>
 
-#define TAG "native"
+#define TAG "native_LOG"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__) // 定义LOGD类型
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,TAG,__VA_ARGS__) // 定义LOGI类型
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN,TAG,__VA_ARGS__) // 定义LOGW类型

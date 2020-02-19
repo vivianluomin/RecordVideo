@@ -22,21 +22,6 @@
 
 class TextureDrawer{
 public:
-    const  char* vertexShaderSource = "attribute vec4 aPosition;"
-            "varying vec2 vTextureCoord;"
-            "uniform mat4 uMvpMatrix;"
-            "void main(){"
-            "gl_Position = uMvpMatrix * aPosition;"
-            "vTextureCoord = (aPosition * 0.5+0.5).xy;"
-            "}";
-
-    const  char* fragmentShaderSource = "#extension GL_OES_EGL_image_external : require\n"
-            "precision highp float;"
-            "varying vec2 vTextureCoord;"
-            "uniform samplerExternalOES uSampler;"
-            "void main(){"
-            "gl_FragColor = texture2D(uSampler,vTextureCoord);"  //纹理采样
-            "}";
 
 public:
     TextureDrawer();
