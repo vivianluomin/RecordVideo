@@ -10,8 +10,9 @@ const static char vertexShaderSource[] =
                 "varying vec2 vTextureCoord;"
                 "uniform mat4 uMvpMatrix;"
                 "void main(){"
-                "gl_Position = uMvpMatrix * aPosition;"
-                "vTextureCoord = (aPosition * 0.5+0.5).xy;"
+                "vec4 po = aPosition * uMvpMatrix;"
+                "gl_Position =  vec4(po.x,po.y,0,1);"
+                "vTextureCoord = (aPosition.xy)*0.5+0.5;"
                 "}";
 
 const static char fragmentShaderSource[] =
@@ -24,19 +25,39 @@ const static char fragmentShaderSource[] =
                 "}";
 
 
+
+const static char  vertexShaderCode[] = "attribute vec4 aPosition;\n"
+        "attribute vec4 aColor;\n"
+        "varying vec4 vColor;\n"
+        "uniform mat4 uMVPMatrix;\n"
+        "void main() \n"
+        "{\n"
+        "    gl_Position = aPosition;\n"
+        "    vColor = vec4(1,0,0,1);\n"
+        "}";
+
+const static char  fragmentShaderCode[] = "precision mediump float;\n"
+        "varying  vec4 vColor;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_FragColor = vColor;\n"
+        "}";
+
+
+
 TextureDrawer::TextureDrawer() {
-    initVertexData();
     initPrograme();
     initFragmentData();
+    initVertexData();
 }
 
 
 void TextureDrawer::initVertexData() {
      float vertexs[] = {
-            -1,1,0,
-            -1,-1,0,
-            1,1,0,
-            1,-1,0
+            -1,-1,0,1,
+            1,-1,0,1,
+            -1,1,0,1,
+            1,1,0,1
     };
 
      GLuint indexs[] = {
@@ -45,16 +66,9 @@ void TextureDrawer::initVertexData() {
     };
 
 
-    glGenBuffers(1, &mIndexbuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexbuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexs), indexs, GL_STATIC_DRAW);
-
-
     glGenBuffers(1, &mVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexs), NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertexs), vertexs);
-
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexs),&vertexs[0], GL_STATIC_DRAW);
 
 }
 
@@ -130,13 +144,16 @@ int TextureDrawer::loadShader(int shaderType,const char* shaderSource) {
 void TextureDrawer::initFragmentData() {
 
     maPositionHandle = glGetAttribLocation(mProgram,"aPosition");
+    LOGE("maPosition: %x",maPositionHandle);
     muMvpMatrixHandle = glGetUniformLocation(mProgram,"uMvpMatrix");
+    LOGE("muMvpMatrixHandle: %x",muMvpMatrixHandle);
 }
 
 void TextureDrawer::draw(int textId, float *sTMatrix) {
     glUseProgram(mProgram);
-    glVertexAttribPointer(maPositionHandle,3,GL_FLOAT,
-            false,3*4,&mVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
+    glVertexAttribPointer(maPositionHandle,4,GL_FLOAT,
+            false,4*4,0);
     glEnableVertexAttribArray(maPositionHandle);
 
     if(sTMatrix!= NULL){
@@ -146,8 +163,7 @@ void TextureDrawer::draw(int textId, float *sTMatrix) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_EXTERNAL_OES,textId);
 
-    glDrawElements(GL_TRIANGLES,mIndexCount,
-            GL_UNSIGNED_BYTE,&mIndexbuffer);
+    glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 }
 
 int TextureDrawer::checkGLError(std::string info) {

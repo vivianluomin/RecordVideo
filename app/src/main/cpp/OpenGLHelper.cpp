@@ -8,13 +8,17 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_initOpenGL(JNIEnv *env,
                                                                    jobject instance,
-                                                                   jobject surface,jint filter){
+                                                                   jobject surface
+                                                                    ,jint filter,int width,int height){
     OpenGLThread *handler = new OpenGLThread();
+    handler->width = width;
+    handler->height = height;
     ANativeWindow *window = ANativeWindow_fromSurface(env,surface);
     handler->openglHepler = env->NewGlobalRef(instance);
     jclass openglHelper = env->GetObjectClass(instance);
     jmethodID openglSucssess = env->GetMethodID(openglHelper,"onOpenGLinitSuccess","()V");
     handler->onOpenGLinitSucccess_method = openglSucssess;
+    handler->onOpenGLRunning_method = env->GetMethodID(openglHelper,"onOpenGLRunning","()V");
     handler->startOpenGLThread(window);
     return (jlong)handler;
 
@@ -34,7 +38,6 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_render(JNIEnv *env,
 
     jfloat * array = env->GetFloatArrayElements(mat,0);
     int length = env->GetArrayLength(mat);
-
     float *mvp = new float[length];
 
     for(int i = 0;i<length;i++){
@@ -43,6 +46,7 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_render(JNIEnv *env,
 
     hand->renderUpdate(textureId,mvp);
     env->ReleaseFloatArrayElements(mat,array,0);
+    delete(mvp);
 
 }
 

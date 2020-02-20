@@ -1,8 +1,11 @@
 package com.example.asus1.videorecoder.Camera;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.Surface;
 
 import com.example.asus1.videorecoder.RecordSetting;
@@ -18,6 +21,14 @@ public class Camera1 implements CameraListener {
     private int mIndex;
     private int mRotation;
     private Camera mCameraDevice;
+    private Activity mActivity;
+
+    private static final String TAG = "Camera1";
+
+
+    public Camera1(Activity activity){
+        mActivity = activity;
+    }
 
     @Override
     public void init(RecordSetting.CameraOrientation position) {
@@ -58,12 +69,15 @@ public class Camera1 implements CameraListener {
 
         //params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         //mCameraDevice.setParameters(params);
+
+        setCameraDisplayOrientation(mActivity,mIndex,mCameraDevice);
     }
 
     @Override
     public void startPreview(SurfaceTexture surfaceTexture) {
         try {
-            surfaceTexture.setDefaultBufferSize(1280,720);
+            Log.d(TAG, "startPreview: ");
+            surfaceTexture.setDefaultBufferSize(1920,1080);
             mCameraDevice.setPreviewTexture(surfaceTexture);
             mCameraDevice.startPreview();
         }catch (IOException e){
@@ -71,6 +85,52 @@ public class Camera1 implements CameraListener {
         }
 
     }
+
+
+    public void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
+
+        Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+
+        int degrees = 0;
+
+        switch (rotation) {
+
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+
+            result = (info.orientation + degrees) % 360;
+
+            result = (360 - result) % 360; // compensate the mirror
+
+        } else { // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+
+        camera.setDisplayOrientation(result);
+    }
+
 
     @Override
     public int getRotation() {

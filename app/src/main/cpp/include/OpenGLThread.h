@@ -12,6 +12,7 @@
 
 //C++的string，默认导入的，会用到的，放着吧
 #include <string>
+#include <cstring>
 //打log用的，下面会把这里面复杂的函数简化就是#define的那几行
 #include <android/log.h>
 //这行和下边那行是用来引入ANativeWindow的
@@ -40,8 +41,10 @@ public:
     EGLDisplay  display;
     EGLContext context;
     EGLSurface surface;
-    float *MVPMat = NULL;
+    float *MVPMat = new float[16];
     int textureId;
+    int width;
+    int height;
     TextureDrawer *drawer;
     pthread_t pid;
     ANativeWindow *window;
@@ -49,6 +52,7 @@ public:
     pthread_mutex_t lock;
     bool render = false;
     jmethodID onOpenGLinitSucccess_method;
+    jmethodID onOpenGLRunning_method;
     jobject openglHepler;
 
 public:

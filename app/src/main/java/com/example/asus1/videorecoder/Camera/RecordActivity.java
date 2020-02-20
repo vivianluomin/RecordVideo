@@ -6,6 +6,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -26,6 +27,8 @@ public class RecordActivity extends AppCompatActivity
     private SurfaceTexture mSurfaceTexture;
     private OpenGLHelper mOpenGLHelper;
 
+    private static final String TAG = "RecordActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +47,19 @@ public class RecordActivity extends AppCompatActivity
     }
 
     private void openCamera(){
-        mCamera = new Camera1();
+        mCamera = new Camera1(this);
         mCamera.init(RecordSetting.CameraOrientation.front);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        initTextureId();
+
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(), RecordSetting.Filter.normal);
+        mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(),
+                RecordSetting.Filter.normal,i1,i2);
 
     }
 
@@ -85,6 +89,7 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     public void onOpenGLinitSuccess() {
+        initTextureId();
         mSurfaceTexture = new SurfaceTexture(mTextId);
         mSurfaceTexture.setOnFrameAvailableListener(this);
         mCamera.startPreview(mSurfaceTexture);
@@ -92,10 +97,17 @@ public class RecordActivity extends AppCompatActivity
 
 
     @Override
+    public void onOpenGLRunning() {
+        mSurfaceTexture.updateTexImage();
+    }
+
+    @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         float[] mvp = new float[16];
-        surfaceTexture.updateTexImage();
         surfaceTexture.getTransformMatrix(mvp);
+        for(int i = 0;i<16;i++){
+            Log.d(TAG, "onFrameAvailable: "+i+"---"+mvp[i]);
+        }
         mOpenGLHelper.render(mTextId,mvp);
     }
 }

@@ -31,8 +31,8 @@ public:
     void initFragmentData();
 
 
-private: int maPositionHandle;
-    int muMvpMatrixHandle;
+private: GLint maPositionHandle;
+    GLint muMvpMatrixHandle;
 
     GLuint mVertexBuffer;
     GLuint mIndexbuffer;

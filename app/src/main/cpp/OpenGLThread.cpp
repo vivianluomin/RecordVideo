@@ -27,13 +27,16 @@ void*  start(void *gl) {
     LOGE("get env ");
     env->CallVoidMethod(glThread->openglHepler,glThread->onOpenGLinitSucccess_method);
     LOGE("class method");
+    glViewport(0,0,glThread->width,glThread->height);
     while (glThread->threadStart){
         if(!glThread->render){
             pthread_mutex_lock(&glThread->lock);
         }
+
+        env->CallVoidMethod(glThread->openglHepler,glThread->onOpenGLRunning_method);
+
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glViewport(0,0,720,1280);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #ifdef __cplusplus
         glThread->drawer->draw(glThread->textureId,glThread->MVPMat);
 #endif
@@ -151,10 +154,9 @@ bool OpenGLThread::initOpenGlES() {
 
 bool OpenGLThread::renderUpdate(int textId,float *mat){
     textureId = textId;
-    if(MVPMat != NULL){
-        delete(MVPMat);
+    for(int i = 0;i<16;i++){
+        MVPMat[i] = mat[i];
     }
-    MVPMat = mat;
     render = true;
     pthread_mutex_unlock(&lock);
 
@@ -185,7 +187,6 @@ bool OpenGLThread::destoryOpenGLES() {
         }
 
         delete(drawer);
-        delete(MVPMat);
     }
 
     return true;

@@ -21,7 +21,7 @@ public class OpenGLHelper {
 
     private long mHandler;
 
-    public void initOpenGL(Surface surface, RecordSetting.Filter filter){
+    public void initOpenGL(Surface surface, RecordSetting.Filter filter,int width,int height){
         int fi = 0;
         if(filter == RecordSetting.Filter.normal){
             fi = 0;
@@ -34,7 +34,7 @@ public class OpenGLHelper {
         }else if(filter == RecordSetting.Filter.mopi){
             fi = 4;
         }
-        mHandler = initOpenGL(surface,fi);
+        mHandler = initOpenGL(surface,fi,width,height);
     }
 
     public void render(int textureId,float[] mat){
@@ -56,7 +56,13 @@ public class OpenGLHelper {
         }
     }
 
-    private native long initOpenGL(Surface surface, int filter);
+    public void onOpenGLRunning(){
+        if(mLifeListener!=null){
+            mLifeListener.onOpenGLRunning();
+        }
+    }
+
+    private native long initOpenGL(Surface surface, int filter,int width,int height);
 
     private native void render(long hander,int textureId,float[] mat);
 
