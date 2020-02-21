@@ -8,20 +8,18 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.Surface;
 
+import com.example.asus1.videorecoder.BaseActivity;
 import com.example.asus1.videorecoder.RecordSetting;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Camera1 implements CameraListener {
+public class Camera1 extends BaseCamera {
 
     //private Surface mSurface;
-    private RecordSetting.CameraOrientation mFacing;
     private int mIndex;
-    private int mRotation;
     private Camera mCameraDevice;
-    private Activity mActivity;
 
     private static final String TAG = "Camera1";
 
@@ -76,6 +74,7 @@ public class Camera1 implements CameraListener {
     @Override
     public void startPreview(SurfaceTexture surfaceTexture) {
         try {
+            mSurfaceTexture = surfaceTexture;
             Log.d(TAG, "startPreview: ");
             surfaceTexture.setDefaultBufferSize(1920,1080);
             mCameraDevice.setPreviewTexture(surfaceTexture);
@@ -86,6 +85,14 @@ public class Camera1 implements CameraListener {
 
     }
 
+
+    @Override
+    void changeCamera(RecordSetting.CameraOrientation position) {
+        stopPreview();
+        release();
+        init(position);
+        startPreview(mSurfaceTexture);
+    }
 
     public void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
 
@@ -133,11 +140,6 @@ public class Camera1 implements CameraListener {
 
 
     @Override
-    public int getRotation() {
-        return mRotation;
-    }
-
-    @Override
     public void stopPreview() {
         mCameraDevice.stopPreview();
     }
@@ -145,5 +147,6 @@ public class Camera1 implements CameraListener {
     @Override
     public void release() {
         mCameraDevice.release();
+        mCameraDevice = null;
     }
 }

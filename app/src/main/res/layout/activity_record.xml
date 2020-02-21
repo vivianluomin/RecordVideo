@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".Camera.RecordActivity">
 
     <SurfaceView
@@ -14,4 +13,13 @@
         android:id="@+id/surface_view"
         />
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/iv_change_camera"
+        android:src="@mipmap/ic_camera"
+        android:layout_gravity="right"
+        android:scaleType="center"
+        />
+
+</FrameLayout>

@@ -45,6 +45,7 @@ public:
     int textureId;
     int width;
     int height;
+    int filter;
     TextureDrawer *drawer;
     pthread_t pid;
     ANativeWindow *window;

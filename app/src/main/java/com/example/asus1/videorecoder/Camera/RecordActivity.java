@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
@@ -18,14 +20,15 @@ import com.example.asus1.videorecoder.RecordSetting;
 public class RecordActivity extends AppCompatActivity
         implements SurfaceHolder.Callback ,
         SurfaceTexture.OnFrameAvailableListener,
-        OpenGLLifeListener{
+        OpenGLLifeListener,View.OnClickListener{
 
     private SurfaceView mSurfaceView;
     private RecordSetting mRecordSetting;
-    private Camera1 mCamera;
+    private BaseCamera mCamera;
     private int mTextId;
     private SurfaceTexture mSurfaceTexture;
     private OpenGLHelper mOpenGLHelper;
+    private ImageView mChangeCamera;
 
     private static final String TAG = "RecordActivity";
 
@@ -41,14 +44,20 @@ public class RecordActivity extends AppCompatActivity
 
     private void init(){
         mSurfaceView = findViewById(R.id.surface_view);
+        mChangeCamera = findViewById(R.id.iv_change_camera);
+        mChangeCamera.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
 
     }
 
     private void openCamera(){
-        mCamera = new Camera1(this);
-        mCamera.init(RecordSetting.CameraOrientation.front);
+        if(mRecordSetting.mCameraType == RecordSetting.CameraType.Camera1){
+            mCamera = new Camera1(this);
+        }else {
+            mCamera = new Camera2(this);
+        }
+        mCamera.init(mRecordSetting.mCameraOri);
     }
 
     @Override
@@ -59,7 +68,7 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         mOpenGLHelper.initOpenGL(surfaceHolder.getSurface(),
-                RecordSetting.Filter.normal,i1,i2);
+                mRecordSetting.mFiler,i1,i2);
 
     }
 
@@ -105,9 +114,27 @@ public class RecordActivity extends AppCompatActivity
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         float[] mvp = new float[16];
         surfaceTexture.getTransformMatrix(mvp);
-        for(int i = 0;i<16;i++){
-            Log.d(TAG, "onFrameAvailable: "+i+"---"+mvp[i]);
-        }
         mOpenGLHelper.render(mTextId,mvp);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_change_camera:
+                RecordSetting.CameraOrientation po
+                        = mRecordSetting.mCameraOri == RecordSetting.CameraOrientation.back?
+                        RecordSetting.CameraOrientation.front:RecordSetting.CameraOrientation.back;
+                mRecordSetting.mCameraOri = po;
+                mCamera.changeCamera(po);
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mCamera.stopPreview();
+        mCamera.release();
+        mOpenGLHelper.deatoryOpenGL();
+        super.onDestroy();
     }
 }

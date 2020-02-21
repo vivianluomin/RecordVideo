@@ -21,17 +21,17 @@
 
 
 class TextureDrawer{
-public:
+
 
 public:
     TextureDrawer();
     void initVertexData();
-    void initPrograme();
+    void initPrograme(const char *vexterSource, const char *fragmentSource);
     void draw(int textId,float * sTMatrix);
-    void initFragmentData();
+    virtual void initFragmentData();
 
 
-private: GLint maPositionHandle;
+protected: GLint maPositionHandle;
     GLint muMvpMatrixHandle;
 
     GLuint mVertexBuffer;
@@ -49,12 +49,33 @@ private: GLint maPositionHandle;
     float *mMvpMatrix = new float[16];
 
 
+protected:
     int loadShader(int shaderType, const char * shader);
     int checkGLError(std::string info);
 
 };
 
+class BlackTextrueDrawer:public TextureDrawer{
+public:
+    BlackTextrueDrawer();
+};
 
+
+class FudiaoTextrueDrawer:public TextureDrawer{
+public:
+    FudiaoTextrueDrawer();
+};
+
+
+class MohuTextrueDrawer:public TextureDrawer{
+public:
+    MohuTextrueDrawer();
+};
+
+class MopiTextureDrawer:public TextureDrawer{
+public:
+    MopiTextureDrawer();
+};
 
 //#ifdef __cplusplus
 //}

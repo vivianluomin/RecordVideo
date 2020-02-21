@@ -13,6 +13,7 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_initOpenGL(JNIEnv *env,
     OpenGLThread *handler = new OpenGLThread();
     handler->width = width;
     handler->height = height;
+    handler->filter = filter;
     ANativeWindow *window = ANativeWindow_fromSurface(env,surface);
     handler->openglHepler = env->NewGlobalRef(instance);
     jclass openglHelper = env->GetObjectClass(instance);

@@ -19,7 +19,7 @@ void*  start(void *gl) {
 
     LOGE("init OpenGL Success");
 
-    glThread->drawer = new TextureDrawer();
+    glThread->drawer = glThread->createTextureDrawer(glThread->filter);
     pthread_mutex_init(&glThread->lock,NULL);
     glThread->threadStart = true;
     JNIEnv * env;
@@ -62,18 +62,19 @@ TextureDrawer* OpenGLThread::createTextureDrawer(int textureType) {
         case FILTER_NORMAL:
             drawer = new TextureDrawer();
             break;
-
         case FILTER_DRAK:
+            drawer = new BlackTextrueDrawer();
             break;
-
         case FILTER_FUDIAO:
+            drawer = new FudiaoTextrueDrawer();
             break;
         case FILTER_MOHU:
+            drawer = new MohuTextrueDrawer();
             break;
         case FILTER_MOPI:
+            drawer = new MopiTextureDrawer();
             break;
     }
-
     return drawer;
 }
 
