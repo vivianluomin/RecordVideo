@@ -54,7 +54,11 @@ public:
     bool render = false;
     jmethodID onOpenGLinitSucccess_method;
     jmethodID onOpenGLRunning_method;
+    jmethodID setShareEGLContext_method;
+    jmethodID onEncode_method;
+    jfieldID mvp_filed;
     jobject openglHepler;
+    bool record = false;
 
 public:
     static JavaVM *JVMInstance;
@@ -64,6 +68,9 @@ public:
     bool initOpenGlES();
     bool renderUpdate(int textId, float *mat);
     bool destoryOpenGLES();
+
+    void startRecord();
+    void stopRecord();
 
 };
 

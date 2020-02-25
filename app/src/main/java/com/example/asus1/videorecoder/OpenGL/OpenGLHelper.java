@@ -1,5 +1,7 @@
 package com.example.asus1.videorecoder.OpenGL;
 
+import android.opengl.EGL14;
+import android.opengl.EGLContext;
 import android.util.Log;
 import android.view.Surface;
 
@@ -14,6 +16,8 @@ public class OpenGLHelper {
 
     private OpenGLLifeListener mLifeListener;
     private static final String TAG = "OpenGLHelper";
+
+    public float[] mvp;
 
     public OpenGLHelper(OpenGLLifeListener lifeListener){
         mLifeListener = lifeListener;
@@ -34,7 +38,7 @@ public class OpenGLHelper {
         }else if(filter == RecordSetting.Filter.mopi){
             fi = 4;
         }
-        mHandler = initOpenGL(surface,fi,width,height);
+        mHandler = nativeInitOpenGL(surface,fi,width,height);
     }
 
     public void render(int textureId,float[] mat){
@@ -62,9 +66,33 @@ public class OpenGLHelper {
         }
     }
 
-    private native long initOpenGL(Surface surface, int filter,int width,int height);
+    public void startRecord(){
+        nativeStartRecord(mHandler);
+    }
+
+    public void stopRecord(){
+        nativeStopRecord(mHandler);
+    }
+
+    public void onEncode(int textId){
+        if(mLifeListener != null){
+            mLifeListener.onEncode(textId,mvp);
+        }
+    }
+
+    public void setShareEGLContext(){
+        if(mLifeListener != null){
+            mLifeListener.setShareEGLContext(EGL14.eglGetCurrentContext());
+        }
+    }
+
+    private native long nativeInitOpenGL(Surface surface, int filter,int width,int height);
 
     private native void render(long hander,int textureId,float[] mat);
 
     private native void destroyOpenGL(long hander);
+
+    private native void nativeStartRecord(long handler);
+
+    private native void nativeStopRecord(long handler);
 }

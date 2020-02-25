@@ -22,4 +22,31 @@
         android:scaleType="center"
         />
 
+    <com.example.asus1.videorecoder.Camera.RecordButtonView
+        android:id="@+id/view_record"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="6dp"
+        />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/iv_back"
+        android:src="@mipmap/ic_back"
+        android:scaleType="center"
+        />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/iv_music"
+        android:src="@mipmap/ic_music"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="51dp"
+        android:layout_marginLeft="30dp"
+        android:scaleType="centerCrop"
+        />
+
 </FrameLayout>

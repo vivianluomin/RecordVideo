@@ -2,8 +2,12 @@ package com.example.asus1.videorecoder.Camera;
 
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.MediaRecorder;
+import android.opengl.EGLContext;
+import java.lang.String;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +17,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.asus1.videorecoder.Controller.RecordPersenter;
+import com.example.asus1.videorecoder.Controller.ViewController;
+import com.example.asus1.videorecoder.Encode.VideoRecordEncode;
 import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
@@ -20,7 +27,7 @@ import com.example.asus1.videorecoder.RecordSetting;
 public class RecordActivity extends AppCompatActivity
         implements SurfaceHolder.Callback ,
         SurfaceTexture.OnFrameAvailableListener,
-        OpenGLLifeListener,View.OnClickListener{
+        OpenGLLifeListener,View.OnClickListener,ViewController{
 
     private SurfaceView mSurfaceView;
     private RecordSetting mRecordSetting;
@@ -29,6 +36,12 @@ public class RecordActivity extends AppCompatActivity
     private SurfaceTexture mSurfaceTexture;
     private OpenGLHelper mOpenGLHelper;
     private ImageView mChangeCamera;
+    private RecordButtonView mRecordButtom;
+    private ImageView mBack;
+    private ImageView mMusic;
+    private boolean mRecord = false;
+    private RecordPersenter mPresenter;
+    private VideoRecordEncode mVideoEncode;
 
     private static final String TAG = "RecordActivity";
 
@@ -43,9 +56,17 @@ public class RecordActivity extends AppCompatActivity
     }
 
     private void init(){
+        mPresenter = RecordPersenter.getPresenterInstantce();
+        mPresenter.setViewController(this);
         mSurfaceView = findViewById(R.id.surface_view);
         mChangeCamera = findViewById(R.id.iv_change_camera);
         mChangeCamera.setOnClickListener(this);
+        mRecordButtom = findViewById(R.id.view_record);
+        mRecordButtom.setOnClickListener(this);
+        mBack = findViewById(R.id.iv_back);
+        mBack.setOnClickListener(this);
+        mMusic = findViewById(R.id.iv_music);
+        mMusic.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
 
@@ -118,6 +139,11 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
+    public void onEncode(int textId, float[] mvp) {
+        mVideoEncode.onFrameAvaliable(textId,mvp);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_change_camera:
@@ -127,7 +153,80 @@ public class RecordActivity extends AppCompatActivity
                 mRecordSetting.mCameraOri = po;
                 mCamera.changeCamera(po);
                 break;
+            case R.id.view_record:
+                setRecord();
+                break;
+
+            case R.id.iv_back:
+                finish();
+                break;
+
+            case R.id.iv_music:
+                break;
+
         }
+    }
+
+
+    private void setRecord(){
+        Log.d(TAG, "setRecord: ");
+        if(mRecord){
+            mRecord = false;
+            mRecordButtom.setClick(false);
+            mRecordButtom.postInvalidate();
+            stopRecording();
+        }else {
+            mRecord = true;
+            mRecordButtom.setClick(true);
+            startRecording();
+        }
+    }
+
+    private void startRecordUI(){
+        Log.d(TAG, "startRecordUI: ");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mRecord){
+                    RecordActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecordButtom.postInvalidate();
+
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(100);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void startRecording() {
+        mPresenter.startRecoding();
+        startRecordUI();
+    }
+
+    @Override
+    public void stopRecording() {
+        mPresenter.stopRecoding();
+        mOpenGLHelper.stopRecord();
+    }
+
+    @Override
+    public void setVideoEncode(VideoRecordEncode encode) {
+        mVideoEncode = encode;
+        mOpenGLHelper.startRecord();
+    }
+
+    @Override
+    public void setShareEGLContext(EGLContext eglContext) {
+        mVideoEncode.setEGLContext(eglContext,mTextId);
     }
 
     @Override

@@ -6,7 +6,7 @@
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_initOpenGL(JNIEnv *env,
+Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeInitOpenGL(JNIEnv *env,
                                                                    jobject instance,
                                                                    jobject surface
                                                                     ,jint filter,int width,int height){
@@ -20,6 +20,9 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_initOpenGL(JNIEnv *env,
     jmethodID openglSucssess = env->GetMethodID(openglHelper,"onOpenGLinitSuccess","()V");
     handler->onOpenGLinitSucccess_method = openglSucssess;
     handler->onOpenGLRunning_method = env->GetMethodID(openglHelper,"onOpenGLRunning","()V");
+    handler->onEncode_method = env->GetMethodID(openglHelper,"onEncode","(I)V");
+    handler->setShareEGLContext_method = env->GetMethodID(openglHelper,"setShareEGLContext","()V");
+    handler->mvp_filed = env->GetFieldID(openglHelper,"mvp","[F");
     handler->startOpenGLThread(window);
     return (jlong)handler;
 
@@ -68,6 +71,35 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_destroyOpenGL(JNIEnv *en
 }
 
 
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeStartRecord(JNIEnv *env,
+                                                                      jobject instance,
+                                                                      jlong handler){
+
+    OpenGLThread *hand = reinterpret_cast<OpenGLThread *>(handler);
+    if(hand == NULL){
+        return;
+    }
+    hand->startRecord();
+}
+
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeStopRecord(JNIEnv *env,
+                                                                          jobject instance,
+                                                                          jlong handler){
+
+    OpenGLThread *hand = reinterpret_cast<OpenGLThread *>(handler);
+    if(hand == NULL){
+        return;
+    }
+    hand->stopRecord();
+}
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 

@@ -40,6 +40,12 @@ void*  start(void *gl) {
 #ifdef __cplusplus
         glThread->drawer->draw(glThread->textureId,glThread->MVPMat);
 #endif
+        if(glThread->record){
+            jfloatArray  mvp = (jfloatArray)(env->GetObjectField(glThread->openglHepler,glThread->mvp_filed));
+            env->SetFloatArrayRegion(mvp,0,16,glThread->MVPMat);
+            env->CallVoidMethod(glThread->openglHepler,glThread->onEncode_method,glThread->textureId);
+        }
+
         eglSwapBuffers(glThread->display,glThread->surface);
         glThread->render = false;
     }
@@ -164,9 +170,20 @@ bool OpenGLThread::renderUpdate(int textId,float *mat){
     return true;
 }
 
+void OpenGLThread::startRecord() {
+    record = true;
+    JNIEnv * env;
+    JVMInstance->AttachCurrentThread(&env,NULL);
+    env->CallVoidMethod(openglHepler,setShareEGLContext_method,context);
+}
+
+void OpenGLThread::stopRecord() {
+    record = false;
+}
+
 bool OpenGLThread::destoryOpenGLES() {
-    pthread_mutex_unlock(&lock);
     threadStart = false;
+    pthread_mutex_unlock(&lock);
     if (display != EGL_NO_DISPLAY) {
         //解绑display上的eglContext和surface
         eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
