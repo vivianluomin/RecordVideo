@@ -8,6 +8,9 @@ import android.view.Surface;
 import com.example.asus1.videorecoder.Camera.OpenGLLifeListener;
 import com.example.asus1.videorecoder.RecordSetting;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public class OpenGLHelper {
 
     static {
@@ -17,7 +20,7 @@ public class OpenGLHelper {
     private OpenGLLifeListener mLifeListener;
     private static final String TAG = "OpenGLHelper";
 
-    public float[] mvp;
+    public float[] mvp = new float[16];
 
     public OpenGLHelper(OpenGLLifeListener lifeListener){
         mLifeListener = lifeListener;
@@ -80,9 +83,10 @@ public class OpenGLHelper {
         }
     }
 
-    public void setShareEGLContext(){
+    public void setShareEGLContext(long openglThread){
         if(mLifeListener != null){
-            mLifeListener.setShareEGLContext(EGL14.eglGetCurrentContext());
+            Log.d(TAG, "setShareEGLContext: "+openglThread);
+                mLifeListener.setShareEGLContext(openglThread);
         }
     }
 

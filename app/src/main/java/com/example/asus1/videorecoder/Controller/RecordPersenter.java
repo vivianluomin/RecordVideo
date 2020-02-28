@@ -5,6 +5,9 @@ import android.opengl.EGLContext;
 
 import com.example.asus1.videorecoder.Encode.VideoMediaMuxer;
 import com.example.asus1.videorecoder.Encode.VideoRecordEncode;
+import com.example.asus1.videorecoder.RecordSetting;
+
+import java.io.IOException;
 
 
 public class RecordPersenter {
@@ -28,8 +31,13 @@ public class RecordPersenter {
         mModelController = modeController;
     }
 
-    public void startRecoding() {
-        mModelController.startRecording();
+    public void startRecoding(RecordSetting setting) {
+        try {
+            VideoMediaMuxer muxer = new VideoMediaMuxer(setting);
+            mModelController.startRecording();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 

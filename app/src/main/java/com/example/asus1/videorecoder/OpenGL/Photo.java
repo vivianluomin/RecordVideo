@@ -17,7 +17,7 @@ public class Photo {
             "uniform mat4 uMvpMatrix;" +
             "void main(){" +
             "gl_Position = aPosition;" +
-            "vTextureCoord = (aPosition * 0.5)+0.5;" +
+            "vTextureCoord = (aPosition.xy * 0.5)+0.5;" +
             "}";
 
     private String mFragmentShader =

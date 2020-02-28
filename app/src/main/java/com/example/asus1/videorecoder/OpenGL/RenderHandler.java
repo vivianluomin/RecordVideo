@@ -1,16 +1,21 @@
 package com.example.asus1.videorecoder.OpenGL;
 
+import android.opengl.EGL14;
 import android.opengl.EGLContext;
 import android.opengl.Matrix;
 import android.util.Log;
 import android.view.Surface;
 
+import com.example.asus1.videorecoder.Encode.FFmpegMuxer;
+import com.example.asus1.videorecoder.Encode.VideoMediaMuxer;
+import com.example.asus1.videorecoder.RecordSetting;
+
 public class RenderHandler implements Runnable {
 
     private boolean mRequestEGLContext = false;
     private int mRequestDraw = 0;
-    private EGLHelper mEGLHelper;
-    private EGLContext mShareContext;
+
+    private long mShareContext;
     private int mTextId;
     private Surface mLinkSurface;
     private Object mSyn = new Object();
@@ -19,18 +24,25 @@ public class RenderHandler implements Runnable {
     private boolean mSetContext = false;
 
     private static final String TAG = "RenderHandler";
+    private FFmpegMuxer mDrawer;
+    private RecordSetting.Filter mFilter;
 
-    public static RenderHandler createRenderHandler(){
-        RenderHandler handler = new RenderHandler();
+
+    private RenderHandler(FFmpegMuxer drawer,RecordSetting.Filter filter){
+        mDrawer = drawer;
+        mFilter = filter;
+    }
+
+    public static RenderHandler createRenderHandler(FFmpegMuxer drawer, RecordSetting.Filter filter){
+        RenderHandler handler = new RenderHandler(drawer,filter);
         return handler;
     }
 
     private void prepare(){
-        mEGLHelper = new EGLHelper(mShareContext,mLinkSurface,mTextId);
+        mDrawer.initEGL(mLinkSurface,mShareContext,mFilter);
     }
 
-    public void setEGLContext(EGLContext context,Surface surface,int textId){
-        Log.d(TAG, "setEGLContext: ");
+    public void setEGLContext(long context,Surface surface,int textId){
         mShareContext = context;
         mLinkSurface = surface;
         mTextId = textId;
@@ -64,6 +76,7 @@ public class RenderHandler implements Runnable {
     @Override
     public void run() {
         boolean localRequestDraw = false;
+        Log.d(TAG, "run: ");
         for(;;){
             if(!mSetContext){
                 continue;
@@ -78,8 +91,7 @@ public class RenderHandler implements Runnable {
             if(localRequestDraw){
                 if(mTextId>=0){
                     mRequestDraw --;
-                    mEGLHelper.makeCurrent();
-                    mEGLHelper.render(mTextId,mStMatrix);
+                    mDrawer.render(mTextId,mStMatrix);
                     Log.d(TAG, "render: end");
                 }
 

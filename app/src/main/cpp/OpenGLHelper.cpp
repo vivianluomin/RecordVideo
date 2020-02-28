@@ -21,7 +21,7 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeInitOpenGL(JNIEnv 
     handler->onOpenGLinitSucccess_method = openglSucssess;
     handler->onOpenGLRunning_method = env->GetMethodID(openglHelper,"onOpenGLRunning","()V");
     handler->onEncode_method = env->GetMethodID(openglHelper,"onEncode","(I)V");
-    handler->setShareEGLContext_method = env->GetMethodID(openglHelper,"setShareEGLContext","()V");
+    handler->setShareEGLContext_method = env->GetMethodID(openglHelper,"setShareEGLContext","(J)V");
     handler->mvp_filed = env->GetFieldID(openglHelper,"mvp","[F");
     handler->startOpenGLThread(window);
     return (jlong)handler;

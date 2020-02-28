@@ -40,6 +40,7 @@ class OpenGLThread{
 public:
     EGLDisplay  display;
     EGLContext context;
+    EGLContext  shareContext = EGL_NO_CONTEXT;
     EGLSurface surface;
     float *MVPMat = new float[16];
     int textureId;
@@ -48,7 +49,7 @@ public:
     int filter;
     TextureDrawer *drawer;
     pthread_t pid;
-    ANativeWindow *window;
+    ANativeWindow *window = nullptr;
     bool threadStart = 0;
     pthread_mutex_t lock;
     bool render = false;
@@ -65,8 +66,10 @@ public:
 public:
     TextureDrawer * createTextureDrawer(int textureType);
     void startOpenGLThread(ANativeWindow *nativeWindow);
-    bool initOpenGlES();
+    bool initOpenGlES(EGLContext shareContext);
     bool renderUpdate(int textId, float *mat);
+
+    void renderFrame(int textId, float *mat);
     bool destoryOpenGLES();
 
     void startRecord();

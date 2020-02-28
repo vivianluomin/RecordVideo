@@ -2,6 +2,9 @@ package com.example.asus1.videorecoder.Encode;
 
 import android.media.MediaCodec;
 import android.os.Environment;
+import android.view.Surface;
+
+import com.example.asus1.videorecoder.RecordSetting;
 
 import java.nio.ByteBuffer;
 
@@ -37,7 +40,37 @@ public class FFmpegMuxer {
         native_writeData(mHandler,mediaTrack,data,pts,size,flag);
     }
 
+    public void initFFmpeg(){
+        native_initFFmpeg(mHandler);
+    }
+
+    public void initEGL(Surface surface, long openglThread, RecordSetting.Filter filter){
+        int fi = 0;
+        if(filter == RecordSetting.Filter.normal){
+            fi = 0;
+        }else if(filter == RecordSetting.Filter.dark){
+            fi = 1;
+        }else if(filter == RecordSetting.Filter.fudiao){
+            fi = 2;
+        }else if(filter == RecordSetting.Filter.mohu){
+            fi = 3;
+        }else if(filter == RecordSetting.Filter.mopi){
+            fi = 4;
+        }
+        native_initEGL(mHandler,surface,openglThread,fi);
+    }
+
+    public void render(int textId,float[] mvp){
+        native_render(mHandler,textId,mvp);
+    }
+
     private native long native_init(String path);
+
+    private native void native_initFFmpeg(long handler);
+
+    private native void native_initEGL(long handler,Surface surface,long openglThread,int filter);
+
+    private native void native_render(long handler,int textId,float[] mvp);
 
     private native void writeData(long handler,int mediaTrack, ByteBuffer data, MediaCodec.BufferInfo info);
 

@@ -10,7 +10,7 @@ void*  start(void *gl) {
 
     OpenGLThread *glThread = static_cast<OpenGLThread *>(gl);
 
-    bool ret = glThread->initOpenGlES();
+    bool ret = glThread->initOpenGlES(EGL_NO_CONTEXT);
     LOGE("ret = %d",ret);
     if(!ret){
         LOGE("initOpenGL failed");
@@ -85,7 +85,7 @@ TextureDrawer* OpenGLThread::createTextureDrawer(int textureType) {
 }
 
 
-bool OpenGLThread::initOpenGlES() {
+bool OpenGLThread::initOpenGlES(EGLContext shareContext) {
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if(display == EGL_NO_DISPLAY){
         LOGE("eglGetDisplay error");
@@ -133,7 +133,11 @@ bool OpenGLThread::initOpenGlES() {
             EGL_NONE
     };
 
-    context = eglCreateContext(display,eglConfig,NULL,attrib_ctx_list);
+    if (shareContext == EGL_NO_CONTEXT){
+        context = eglCreateContext(display,eglConfig,NULL,attrib_ctx_list);
+    } else{
+        context = eglCreateContext(display,eglConfig,shareContext,attrib_ctx_list);
+    }
     if(context == EGL_NO_CONTEXT){
         LOGE("elgCreateContext error");
         return false;
@@ -146,6 +150,9 @@ bool OpenGLThread::initOpenGlES() {
         LOGE("eglCreateWindowSurface error");
         return false;
     }
+
+    eglQuerySurface(display,surface,NULL,&width);
+    eglQuerySurface(display,surface,NULL,&height);
 
     LOGE("window surface create success ");
 
@@ -170,11 +177,22 @@ bool OpenGLThread::renderUpdate(int textId,float *mat){
     return true;
 }
 
+void OpenGLThread::renderFrame(int textId, float *mat) {
+    eglMakeCurrent(display,surface,surface,context);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //glViewport(0,0,width,height);
+    drawer->draw(textId,mat);
+    eglSwapBuffers(display,surface);
+}
+
 void OpenGLThread::startRecord() {
     record = true;
     JNIEnv * env;
     JVMInstance->AttachCurrentThread(&env,NULL);
-    env->CallVoidMethod(openglHepler,setShareEGLContext_method,context);
+    OpenGLThread *openGLThread = new OpenGLThread();
+    openGLThread->shareContext = context;
+    env->CallVoidMethod(openglHepler,setShareEGLContext_method,(jlong)openGLThread);
 }
 
 void OpenGLThread::stopRecord() {

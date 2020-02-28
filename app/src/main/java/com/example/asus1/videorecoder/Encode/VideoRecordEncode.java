@@ -32,11 +32,12 @@ public class VideoRecordEncode implements Runnable {
     private int mWidth;
     private int mHeight;
     private int mTexId;
-    private EGLContext mShare_Context;
+
     private MediaCodec.BufferInfo mBfferInfo;
     private boolean mEnOS = false;
-    private RenderHandler mHandler;
+
     private int mTrackIndex;
+    private RenderHandler mHandler;
     private VideoMediaMuxer mMuxer;
 
     private boolean mMuxerStart = false;
@@ -49,7 +50,7 @@ public class VideoRecordEncode implements Runnable {
         mPrepareLisnter = prepareLisnter;
         mMuxer = muxer;
         mBfferInfo = new MediaCodec.BufferInfo();
-        mHandler = RenderHandler.createRenderHandler();
+        mHandler = RenderHandler.createRenderHandler(mMuxer.mFFmepgMuxer,mMuxer.mRecordSetting.mFiler);
         synchronized (mSync){
             new Thread(this).start();
             try {
@@ -98,6 +99,7 @@ public class VideoRecordEncode implements Runnable {
 
             //得到Surface用于编码
             mSurface = mViedeoEncode.createInputSurface();
+            new Thread(mHandler).start();
             mViedeoEncode.start();
             mPrepareLisnter.onPrepare(this);
 
@@ -121,6 +123,7 @@ public class VideoRecordEncode implements Runnable {
     }
 
     public boolean onFrameAvaliable(int textId,float[] stMatrix){
+        Log.d(TAG, "onFrameAvaliable: ");
 
         synchronized (mSync){
             if(!mIsCaturing||mLocalRquestStop){
@@ -134,10 +137,11 @@ public class VideoRecordEncode implements Runnable {
         return true;
     }
 
-    public void setEGLContext(EGLContext context,int texId){
-        mShare_Context = context;
+    public void setEGLContext(long openglThread,int texId){
+        //mShare_Context = context;
         mTexId = texId;
-       mHandler.setEGLContext(mShare_Context,mSurface,mTexId);
+        mHandler.setEGLContext(openglThread,mSurface,mTexId);
+        //mMuxer.mFFmepgMuxer.initEGL(mSurface,openglThread);
     }
 
 
@@ -207,7 +211,7 @@ public class VideoRecordEncode implements Runnable {
                Log.d(TAG, "drain: "+encodeStatue);
 
                MediaFormat format = mViedeoEncode.getOutputFormat();
-               //mTrackIndex = mMuxer.addTrack(format);
+               mTrackIndex = mMuxer.addTrack(format);
                mMuxerStart = true;
                if(!mMuxer.start()){
                    synchronized (mMuxer){
@@ -267,7 +271,7 @@ public class VideoRecordEncode implements Runnable {
             }
             mIsCaturing = false;
             mLocalRquestStop = true;
-            //mHandler.stop();
+            mHandler.stop();
             mSync.notifyAll();
         }
 

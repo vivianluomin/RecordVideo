@@ -155,7 +155,7 @@ public class AudioRecordEncode implements Runnable {
                 Log.d(TAG, "drain: "+encodeStatue);
 
                 MediaFormat format = mCodec.getOutputFormat();
-                //mTrackIndex = mMuxer.addTrack(format);
+                mTrackIndex = mMuxer.addTrack(format);
                 mMuxerStart = true;
                 if(!mMuxer.start()){
                     synchronized (mMuxer){

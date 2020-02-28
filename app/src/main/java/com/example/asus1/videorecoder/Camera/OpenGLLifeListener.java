@@ -11,5 +11,5 @@ public interface OpenGLLifeListener {
 
     void onEncode(int textId,float[] mvp);
 
-    void setShareEGLContext(EGLContext eglContext);
+    void setShareEGLContext(long openglHelper);
 }

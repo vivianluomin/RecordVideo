@@ -6,10 +6,22 @@
 
 FFmpegMuxer::FFmpegMuxer(const char* path) {
     mPath = path;
-    init();
 }
 
-void FFmpegMuxer::init(){
+
+void FFmpegMuxer::initEGL(ANativeWindow *nativeWindow, OpenGLThread *openglthread, int filter) {
+    this->openGLThread = openglthread;
+    openglthread->window = nativeWindow;
+    openglthread->initOpenGlES(openglthread->shareContext);
+    openglthread->drawer = openglthread->createTextureDrawer(filter);
+}
+
+void FFmpegMuxer::render(int textId, float *mvp) {
+    openGLThread->renderFrame(textId,mvp);
+}
+
+
+void FFmpegMuxer::initFFmpeg(){
     av_register_all();
     AVPacket avPacket;
     int ret,i;
@@ -186,7 +198,7 @@ void FFmpegMuxer::writeToFile(uint8_t *data,BufferInfo *info,AVStream *avStream,
         avPacket.flags |= BufferInfo::BUFFER_FLAG_KEY_FRAME;
     }
 
-    av_write_frame(mFormateContext,&avPacket);
+    av_interleaved_write_frame(mFormateContext,&avPacket);
 
 }
 
@@ -211,7 +223,7 @@ void FFmpegMuxer::stop() {
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_native_1init(JNIEnv *env,
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1init(JNIEnv *env,
 jobject instance,jstring path) {
 
     const char* p = env->GetStringUTFChars(path,NULL);
@@ -225,10 +237,56 @@ jobject instance,jstring path) {
 }
 
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1initEGL(JNIEnv *env,
+                                                                    jobject instance,
+                                                                      jlong handler,
+                                                                      jobject surface,
+                                                                    jlong openglThread,jint filter) {
+
+    FFmpegMuxer * fFmpegMuxer = reinterpret_cast<FFmpegMuxer *>(handler);
+    OpenGLThread* openGL = reinterpret_cast<OpenGLThread *>(openglThread);
+    LOGE("shareContext: %d",openGL->shareContext == EGL_NO_CONTEXT);
+    ANativeWindow * window = ANativeWindow_fromSurface(env,surface);
+    fFmpegMuxer->initEGL(window,openGL,filter);
+}
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_writeData(JNIEnv *env,
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1render(JNIEnv *env,
+                                                                      jobject instance,
+                                                                      jlong handler,
+                                                                      jint textId,
+                                                                      jfloatArray mvp) {
+    FFmpegMuxer * fFmpegMuxer = reinterpret_cast<FFmpegMuxer *>(handler);
+    jfloat * array = env->GetFloatArrayElements(mvp,0);
+    int length = env->GetArrayLength(mvp);
+    float *mat = new float[length];
+
+    for(int i = 0;i<length;i++){
+        mat[i] = array[i];
+    }
+    fFmpegMuxer->render(textId,mat);
+    env->ReleaseFloatArrayElements(mvp,array,0);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1initFFmpeg(JNIEnv *env,
+                                                                                  jobject instance,
+                                                                                  jlong handler){
+    FFmpegMuxer * fFmpegMuxer = reinterpret_cast<FFmpegMuxer *>(handler);
+    fFmpegMuxer->initFFmpeg();
+}
+
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_writeData(JNIEnv *env,
                                                                               jobject instance,
                                                                               jlong handler,
                                                                               jint mediaTrack,
@@ -268,7 +326,7 @@ Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_writeData(JN
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_native_1stop(JNIEnv *env,
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1stop(JNIEnv *env,
                                                                                  jobject instance,
                                                                                  jlong handler) {
 
@@ -280,7 +338,7 @@ Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_native_1stop
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_asus1_funcamera_RecordVideo_RecordUtil_FFmpegMuxer_native_1writeData(JNIEnv *env,
+Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1writeData(JNIEnv *env,
                                                                                       jobject instance,
                                                                                       jlong handler,
                                                                                       jint mediaTrack,

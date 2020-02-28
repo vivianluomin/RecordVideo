@@ -140,7 +140,7 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     public void onEncode(int textId, float[] mvp) {
-        mVideoEncode.onFrameAvaliable(textId,mvp);
+        mVideoEncode.onFrameAvaliable(mTextId,mvp);
     }
 
     @Override
@@ -208,7 +208,7 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     public void startRecording() {
-        mPresenter.startRecoding();
+        mPresenter.startRecoding(mRecordSetting);
         startRecordUI();
     }
 
@@ -225,8 +225,8 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
-    public void setShareEGLContext(EGLContext eglContext) {
-        mVideoEncode.setEGLContext(eglContext,mTextId);
+    public void setShareEGLContext(long openglThread) {
+        mVideoEncode.setEGLContext(openglThread,mTextId);
     }
 
     @Override

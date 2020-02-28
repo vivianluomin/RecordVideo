@@ -94,6 +94,7 @@ include_directories(src/main/cpp/include/)
 # 告诉编译器生成native-lib库需要链接的库
 # native-lib库需要依赖avcodec、avfilter等库
 target_link_libraries(FFmpegMuxer
+        OpenGLHelper
         avcodec
         avfilter
         avformat

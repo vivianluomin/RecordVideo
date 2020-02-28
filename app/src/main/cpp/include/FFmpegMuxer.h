@@ -4,15 +4,11 @@
 
 #ifndef FUNCAMERA_FFMPEGMUXER_H
 #define FUNCAMERA_FFMPEGMUXER_H
-#include <jni.h>
-#include <string>
-#include<android/log.h>
+
 #include <iostream>
 
 extern "C"
 {
-
-#include <android/native_window_jni.h>
 #include <libavfilter/avfilter.h>
 #include <libavcodec/avcodec.h>
 //封装格式处理
@@ -22,8 +18,9 @@ extern "C"
 //像素处理
 #include <libswscale/swscale.h>
 #include <unistd.h>
-#include "LOG.h"
 }
+
+#include "OpenGLThread.h"
 
 
 
@@ -50,6 +47,9 @@ public:
     void writeData(int mediaTrack,uint8_t *data,BufferInfo *info);
     void writeData(int mediaTrack,uint8_t *data, long pts,int size,int flag);
     void stop();
+    void initFFmpeg();
+    void initEGL(ANativeWindow *nativeWindow,OpenGLThread * openglthread, int filter);
+    void render(int textId, float *mvp);
 
 
 private:
@@ -67,7 +67,7 @@ private:
     bool firstAudioFrame = true;
     int mVideroIndex = 0;
     int mAudioIndex = 0;
-    void init();
+    OpenGLThread *openGLThread;
     void writeToFile(uint8_t *data,BufferInfo *info,AVStream *avStreamm,int index);
     AVStream *addVideoStream(AVFormatContext *pForContext,AVCodecID codecID);
     AVStream *addAudioStream(AVFormatContext *pForContext,AVCodecID codecID);
