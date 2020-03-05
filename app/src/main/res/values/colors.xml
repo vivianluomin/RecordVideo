@@ -6,5 +6,9 @@
     <color name="text_black">#212121</color>
     <color name="white">#fff</color>
     <color name="orange_50">#fbe9e7</color>
+    <color name="orange_100">#ffccbc</color>
     <color name="main_orange">#ff8a65</color>
+    <color name="grey_400">#bdbdbd</color>
+    <color name="grey_300">#e0e0e0</color>
+    <color name="grey_200">#eeeeee</color>
 </resources>

@@ -23,6 +23,7 @@ import com.example.asus1.videorecoder.Encode.VideoRecordEncode;
 import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
+import com.example.asus1.videorecoder.music.MusicActivity;
 
 public class RecordActivity extends AppCompatActivity
         implements SurfaceHolder.Callback ,
@@ -162,6 +163,7 @@ public class RecordActivity extends AppCompatActivity
                 break;
 
             case R.id.iv_music:
+                startActivity(new Intent(RecordActivity.this,MusicActivity.class));
                 break;
 
         }
