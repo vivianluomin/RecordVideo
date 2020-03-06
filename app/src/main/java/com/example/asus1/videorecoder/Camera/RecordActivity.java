@@ -8,6 +8,7 @@ import java.lang.String;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +44,10 @@ public class RecordActivity extends AppCompatActivity
     private boolean mRecord = false;
     private RecordPersenter mPresenter;
     private VideoRecordEncode mVideoEncode;
+    private static int MUSIC_RESULT = 10;
+    private String mMusic_Url = "";
+    private int mMusicTime = 0;
+    private MusicPlayerThread mMusicThread;
 
     private static final String TAG = "RecordActivity";
 
@@ -70,7 +75,9 @@ public class RecordActivity extends AppCompatActivity
         mMusic.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
-
+        mMusicThread = new MusicPlayerThread();
+        mMusicThread.start();
+        mMusicThread.setLinstener(playLinstener);
     }
 
     private void openCamera(){
@@ -163,7 +170,8 @@ public class RecordActivity extends AppCompatActivity
                 break;
 
             case R.id.iv_music:
-                startActivity(new Intent(RecordActivity.this,MusicActivity.class));
+                startActivityForResult(new Intent(RecordActivity.this
+                        ,MusicActivity.class),MUSIC_RESULT);
                 break;
 
         }
@@ -212,12 +220,18 @@ public class RecordActivity extends AppCompatActivity
     public void startRecording() {
         mPresenter.startRecoding(mRecordSetting);
         startRecordUI();
+        if(!mMusic_Url.equals("")){
+            mMusicThread.play();
+        }
     }
 
     @Override
     public void stopRecording() {
         mPresenter.stopRecoding();
         mOpenGLHelper.stopRecord();
+        if(!mMusic_Url.equals("")){
+            mMusicThread.stopMedia();
+        }
     }
 
     @Override
@@ -229,6 +243,23 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void setShareEGLContext(long openglThread) {
         mVideoEncode.setEGLContext(openglThread,mTextId);
+    }
+
+    private MusicPlayerThread.MusicPlayLinstener playLinstener = new MusicPlayerThread.MusicPlayLinstener() {
+        @Override
+        public void compelte() {
+
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == MUSIC_RESULT && resultCode == RESULT_OK){
+            mMusic_Url = data.getStringExtra("music");
+            mMusicTime = data.getIntExtra("time",0);
+            mMusicThread.setSrouce(mMusic_Url,mMusicTime/2);
+        }
     }
 
     @Override

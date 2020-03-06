@@ -22,6 +22,10 @@
         </activity>
         <activity android:name=".Camera.RecordActivity" />
         <activity android:name=".music.MusicActivity"></activity>
+
+        <service android:name=".music.MusicService">
+        </service>
+
     </application>
 
 </manifest>
