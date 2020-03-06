@@ -104,9 +104,11 @@ public class MusicActivity extends BaseActivity implements Handler.Callback{
                 Bundle useBunlde = msg.getData();
                 String musicUrl = useBunlde.getString("url");
                 int musicTime = useBunlde.getInt("time",0);
+                String musicName = useBunlde.getString("name");
                 Intent intent = new Intent();
                 intent.putExtra("music",musicUrl);
                 intent.putExtra("time",musicTime);
+                intent.putExtra("name",musicName);
                 setResult(RESULT_OK,intent);
                 finish();
 

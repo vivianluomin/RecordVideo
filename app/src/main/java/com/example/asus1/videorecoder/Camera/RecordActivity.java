@@ -17,6 +17,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.asus1.videorecoder.Controller.RecordPersenter;
 import com.example.asus1.videorecoder.Controller.ViewController;
@@ -25,6 +27,7 @@ import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
 import com.example.asus1.videorecoder.music.MusicActivity;
+import com.example.asus1.videorecoder.videomanager.VideoManagerActivity;
 
 public class RecordActivity extends AppCompatActivity
         implements SurfaceHolder.Callback ,
@@ -47,8 +50,12 @@ public class RecordActivity extends AppCompatActivity
     private static int MUSIC_RESULT = 10;
     private String mMusic_Url = "";
     private int mMusicTime = 0;
+    private String mMusic_name;
     private MusicPlayerThread mMusicThread;
-
+    private LinearLayout mMusicLinear;
+    private ImageView mMusicCancle;
+    private TextView mMusicName;
+    private ImageView mSeeVideo;
     private static final String TAG = "RecordActivity";
 
     @Override
@@ -73,6 +80,12 @@ public class RecordActivity extends AppCompatActivity
         mBack.setOnClickListener(this);
         mMusic = findViewById(R.id.iv_music);
         mMusic.setOnClickListener(this);
+        mMusicLinear = findViewById(R.id.linear_music);
+        mMusicCancle = findViewById(R.id.iv_cancle_music);
+        mMusicCancle.setOnClickListener(this);
+        mMusicName = findViewById(R.id.tv_music_name);
+        mSeeVideo = findViewById(R.id.iv_see);
+        mSeeVideo.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
         mMusicThread = new MusicPlayerThread();
@@ -173,6 +186,17 @@ public class RecordActivity extends AppCompatActivity
                 startActivityForResult(new Intent(RecordActivity.this
                         ,MusicActivity.class),MUSIC_RESULT);
                 break;
+            case R.id.iv_cancle_music:
+                if(!mRecord){
+                    mMusic_Url = "";
+                    mMusicThread.reset();
+                    mMusicLinear.setVisibility(View.GONE);
+                }
+
+            case R.id.iv_see:
+                startActivity(new Intent(RecordActivity.this,
+                        VideoManagerActivity.class));
+                break;
 
         }
     }
@@ -258,7 +282,13 @@ public class RecordActivity extends AppCompatActivity
         if(requestCode == MUSIC_RESULT && resultCode == RESULT_OK){
             mMusic_Url = data.getStringExtra("music");
             mMusicTime = data.getIntExtra("time",0);
+            mMusic_name = data.getStringExtra("name");
             mMusicThread.setSrouce(mMusic_Url,mMusicTime/2);
+            if(mMusic_name.length()>10){
+                mMusic_name = mMusic_name.substring(0,10);
+            }
+            mMusicName.setText(mMusic_name);
+            mMusicLinear.setVisibility(View.VISIBLE);
         }
     }
 

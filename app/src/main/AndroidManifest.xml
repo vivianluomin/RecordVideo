@@ -21,11 +21,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Camera.RecordActivity" />
-        <activity android:name=".music.MusicActivity"></activity>
+        <activity android:name=".music.MusicActivity" />
 
-        <service android:name=".music.MusicService">
-        </service>
+        <service android:name=".music.MusicService" />
 
+        <activity android:name=".videomanager.VideoManagerActivity"></activity>
     </application>
 
 </manifest>

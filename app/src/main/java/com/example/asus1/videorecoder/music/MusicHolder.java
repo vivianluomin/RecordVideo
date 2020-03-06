@@ -74,6 +74,7 @@ public class MusicHolder extends RecyclerView.ViewHolder implements View.OnClick
                 Bundle bundle = new Bundle();
                 bundle.putString("url",mData.path);
                 bundle.putInt("time",mData.duration);
+                bundle.putString("name",mData.name);
                 Message message = new Message();
                 message.what = MusicActivity.MSG_USE;
                 message.setData(bundle);

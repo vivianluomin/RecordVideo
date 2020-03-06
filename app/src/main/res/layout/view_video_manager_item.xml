@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:id="@+id/iv_video_1"
+            android:background="@mipmap/bg_music"
+            android:scaleType="centerCrop"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="120dp"
+            android:background="@color/white"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:id="@+id/iv_video_2"
+            android:background="@mipmap/bg_music"
+            android:scaleType="centerCrop"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="120dp"
+            android:background="@color/white"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:id="@+id/iv_video_3"
+            android:background="@mipmap/bg_music"
+            android:scaleType="centerCrop"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

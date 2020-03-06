@@ -71,6 +71,10 @@ public class MusicPlayerThread extends Thread implements MediaPlayer.OnPreparedL
 
     }
 
+    public void reset(){
+        mMeidaPlayer.reset();
+    }
+
     public void stopMedia(){
         mMeidaPlayer.stop();
         mMeidaPlayer.release();

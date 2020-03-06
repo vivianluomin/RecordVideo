@@ -265,8 +265,8 @@ typedef struct AVFrame {
     uint8_t **extended_data;
 
     /**
-     * @name Video dimensions
-     * Video frames only. The coded dimensions (in pixels) of the video frame,
+     * @name VideoModel dimensions
+     * VideoModel frames only. The coded dimensions (in pixels) of the video frame,
      * i.e. the size of the rectangle that contains some well-defined values.
      *
      * @note The part of the frame intended for display/presentation is further

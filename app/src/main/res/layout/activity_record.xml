@@ -13,6 +13,38 @@
         android:id="@+id/surface_view"
         />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:id="@+id/linear_music"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:id="@+id/iv_cancle_music"
+            android:src="@mipmap/ic_close"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_music_name"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="三零二"
+            android:layout_gravity="center_vertical"
+            />
+
+
+    </LinearLayout>
+
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -46,6 +78,18 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="51dp"
         android:layout_marginLeft="30dp"
+        android:scaleType="centerCrop"
+        />
+
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/iv_see"
+        android:src="@mipmap/ic_see"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="51dp"
+        android:layout_marginRight="30dp"
         android:scaleType="centerCrop"
         />
 

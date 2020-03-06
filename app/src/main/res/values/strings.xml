@@ -18,4 +18,5 @@
     <string name="muxer_CPU">软编码</string>
     <string name="record">录制</string>
     <string name="requestPermission">请打开相关权限</string>
+    <string name="title_activity_video_manager">VideoManagerActivity</string>
 </resources>
