@@ -25,7 +25,8 @@
 
         <service android:name=".music.MusicService" />
 
-        <activity android:name=".videomanager.VideoManagerActivity"></activity>
+        <activity android:name=".videomanager.VideoManagerActivity" />
+        <activity android:name=".videomanager.PlayVideoActivity"></activity>
     </application>
 
 </manifest>

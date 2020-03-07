@@ -1,6 +1,7 @@
 package com.example.asus1.videorecoder.videomanager;
 
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -35,9 +36,21 @@ public class VideoModel implements Parcelable {
     public VideoModel(String mSrc, String mTime) {
         this.mSrc = mSrc;
         this.mTime = mTime;
-        bitmap = ThumbnailUtils.createVideoThumbnail(mSrc, MediaStore.Images.
-                Thumbnails.MINI_KIND);
+        if(mSrc != null){
+            bitmap = getVideoThumb(mSrc);
+        }
     }
+
+    public  static Bitmap getVideoThumb(String path) {
+
+        MediaMetadataRetriever media = new MediaMetadataRetriever();
+
+        media.setDataSource(path);
+
+        return  media.getFrameAtTime();
+
+    }
+
 
 
     public String getmSrc() {

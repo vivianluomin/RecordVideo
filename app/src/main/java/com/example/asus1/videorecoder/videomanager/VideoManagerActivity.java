@@ -1,25 +1,37 @@
 package com.example.asus1.videorecoder.videomanager;
 
 import android.arch.lifecycle.ViewModel;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.asus1.videorecoder.BaseActivity;
+import com.example.asus1.videorecoder.Encode.VideoMediaMuxer;
 import com.example.asus1.videorecoder.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoManagerActivity extends BaseActivity {
+public class VideoManagerActivity extends BaseActivity implements Handler.Callback {
 
     private ImageView mBack;
     private RecyclerView mRecyclerView;
     private VideoManagerAdapter mAdapter;
     private List<VideoModel> mVideoModelLists = new ArrayList<>();
+    private Handler mHandler;
+    public static final int RESPONSE_DATA = 11;
+    public static final int MSG_DELETE = 12;
+
+    private static final String TAG = "VideoManagerActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +40,7 @@ public class VideoManagerActivity extends BaseActivity {
         init();
     }
     private void init(){
+        mHandler = new Handler(Looper.getMainLooper(),this);
         mBack = findViewById(R.id.iv_back);
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,8 +50,58 @@ public class VideoManagerActivity extends BaseActivity {
         });
 
         mRecyclerView = findViewById(R.id.recycler_view);
-        mAdapter = new VideoManagerAdapter(this,mVideoModelLists);
+        mAdapter = new VideoManagerAdapter(this,mVideoModelLists,mHandler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
+        getData();
+    }
+
+    private void getData(){
+        new Thread(new ReadFileRunnable()).start();
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what){
+            case RESPONSE_DATA:
+                Log.d(TAG, "RESPONSE_DATA: ");
+                mAdapter.notifyDataSetChanged();
+                break;
+
+            case MSG_DELETE:
+                Bundle bundle = msg.getData();
+                VideoModel model = bundle.getParcelable("video");
+                if(model.getmSrc() != null){
+                    mVideoModelLists.remove(model);
+                    File file = new File(model.getmSrc());
+                    file.delete();
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+        return true;
+    }
+
+    private class ReadFileRunnable implements Runnable{
+        private static final String TAG = "ReadFileRunnable";
+        @Override
+        public void run() {
+            File file = new File(Environment.
+                    getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), VideoMediaMuxer.DIR_NAME);
+            file.mkdirs();
+            String[] files = file.list();
+            Log.d(TAG, "run: "+files.length);
+            ArrayList<VideoModel> models = new ArrayList<>();
+            for(int i = 0;i<files.length;i++){
+                String src = new File(file,files[i]).toString();
+                Log.d(TAG, "run: "+src);
+                String time = files[i];
+                models.add(new VideoModel(src,time));
+            }
+
+            mVideoModelLists.clear();
+            mVideoModelLists.addAll(models);
+            mHandler.obtainMessage(RESPONSE_DATA).sendToTarget();
+        }
     }
 }
