@@ -11,16 +11,22 @@ extern "C"
 {
 #include <libavfilter/avfilter.h>
 #include <libavcodec/avcodec.h>
+#include <libavutil/common.h>
+#include <libavutil/opt.h>
+#include <libavutil/samplefmt.h>
 //封装格式处理
 #include <libavformat/avformat.h>
 #include <libavutil/avconfig.h>
 #include <libavutil/time.h>
 //像素处理
 #include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
 #include <unistd.h>
 }
 
 #include "OpenGLThread.h"
+
+#include <stdio.h>
 
 
 
@@ -50,7 +56,8 @@ public:
     void initFFmpeg();
     void initEGL(ANativeWindow *nativeWindow,OpenGLThread * openglthread, int filter);
     void render(int textId, float *mvp);
-
+    void getFirstFrame(const char *filePath, const char *picPath);
+    void SaveFrame(AVPacket *packet,AVFrame* pFrame,int width,int height, const char *name);
 
 private:
     const char* mPath;
@@ -74,7 +81,6 @@ private:
 
 
 };
-
 
 
 

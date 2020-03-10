@@ -293,6 +293,11 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         mCamera.stopPreview();
         mCamera.release();

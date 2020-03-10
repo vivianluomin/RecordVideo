@@ -6,12 +6,15 @@ import android.media.ThumbnailUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class VideoModel implements Parcelable {
 
     private String mSrc;
     private String mTime;
     private Bitmap bitmap;
+    private String mPic;
+    private static final String TAG = "VideoModel";
 
     public static Parcelable.Creator<VideoModel> CREATOR = new Parcelable.Creator<VideoModel>(){
 
@@ -29,14 +32,16 @@ public class VideoModel implements Parcelable {
     private VideoModel(Parcel source){
         this.mSrc = source.readString();
         this.mTime = source.readString();
-
+        this.mPic = source.readString();
 
     }
 
-    public VideoModel(String mSrc, String mTime) {
+    public VideoModel(String mSrc, String mTime,String pic) {
         this.mSrc = mSrc;
         this.mTime = mTime;
-        if(mSrc != null){
+        this.mPic = pic;
+        if(mSrc != null && mPic == null){
+            Log.d(TAG, "VideoModel: bitmap is null");
             bitmap = getVideoThumb(mSrc);
         }
     }
@@ -77,6 +82,14 @@ public class VideoModel implements Parcelable {
         this.bitmap = bitmap;
     }
 
+    public void setPic(String mPic) {
+        this.mPic = mPic;
+    }
+
+    public String getPic() {
+        return mPic;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,5 +100,6 @@ public class VideoModel implements Parcelable {
 
         dest.writeString(mSrc);
         dest.writeString(mTime);
+        dest.writeString(mPic);
     }
 }

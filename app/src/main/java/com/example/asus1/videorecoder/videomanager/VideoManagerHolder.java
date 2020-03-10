@@ -3,6 +3,7 @@ package com.example.asus1.videorecoder.videomanager;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.asus1.videorecoder.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +74,7 @@ public class VideoManagerHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public boolean onLongClick(View v) {
-        VideoModel model = new VideoModel(null,null);
+        VideoModel model = new VideoModel(null,null,null);
         switch (v.getId()){
             case R.id.iv_video_1:
                 Log.d(TAG, "onClick: 1");
@@ -102,7 +105,11 @@ public class VideoManagerHolder extends RecyclerView.ViewHolder implements
         for(;i<mDatas.size();i++){
             ImageView view = mCovers.get(i);
             VideoModel model = mDatas.get(i);
-            view.setImageBitmap(model.getBitmap());
+            Log.d(TAG, "setData: "+model.getPic());
+            Glide.with(mContext)
+                    .load(Uri.fromFile(new File(model.getPic())))
+                    .error(R.mipmap.ic_launcher)
+                    .into(view);
         }
 
         for(;i<mCovers.size();i++){

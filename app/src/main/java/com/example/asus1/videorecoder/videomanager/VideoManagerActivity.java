@@ -1,6 +1,7 @@
 package com.example.asus1.videorecoder.videomanager;
 
 import android.arch.lifecycle.ViewModel;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.asus1.videorecoder.BaseActivity;
+import com.example.asus1.videorecoder.Encode.FFmpegMuxer;
 import com.example.asus1.videorecoder.Encode.VideoMediaMuxer;
 import com.example.asus1.videorecoder.R;
 
@@ -32,6 +34,8 @@ public class VideoManagerActivity extends BaseActivity implements Handler.Callba
     public static final int MSG_DELETE = 12;
 
     private static final String TAG = "VideoManagerActivity";
+
+    private FFmpegMuxer fFmpegMuxer = new FFmpegMuxer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +98,16 @@ public class VideoManagerActivity extends BaseActivity implements Handler.Callba
             ArrayList<VideoModel> models = new ArrayList<>();
             for(int i = 0;i<files.length;i++){
                 String src = new File(file,files[i]).toString();
+                if (!src.endsWith("mp4")){
+                    continue;
+                }
                 Log.d(TAG, "run: "+src);
                 String time = files[i];
-                models.add(new VideoModel(src,time));
+                String ss = src.substring(0,src.length()-4);
+                Log.d(TAG, "run:ss-0  "+ss);
+                String picPath = ss+".jpg";
+                fFmpegMuxer.getFrame(src,picPath);
+                models.add(new VideoModel(src,time,picPath));
             }
 
             mVideoModelLists.clear();

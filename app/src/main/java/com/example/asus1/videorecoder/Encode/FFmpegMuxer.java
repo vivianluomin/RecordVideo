@@ -1,11 +1,16 @@
 package com.example.asus1.videorecoder.Encode;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaCodec;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Surface;
 
 import com.example.asus1.videorecoder.RecordSetting;
+import com.example.asus1.videorecoder.Utils;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 public class FFmpegMuxer {
@@ -17,6 +22,8 @@ public class FFmpegMuxer {
 
     private long mHandler;
     private String mPath;
+
+    private static final String TAG = "FFmpegMuxer";
 
     public FFmpegMuxer(){
         init();
@@ -60,6 +67,14 @@ public class FFmpegMuxer {
         native_initEGL(mHandler,surface,openglThread,fi);
     }
 
+    public void getFrame(String path,String picPath){
+        File file = new File(picPath);
+        if(!file.exists()){
+            new File(picPath);
+            native_getFrame(mHandler,path,picPath);
+        }
+    }
+
     public void render(int textId,float[] mvp){
         native_render(mHandler,textId,mvp);
     }
@@ -78,4 +93,5 @@ public class FFmpegMuxer {
 
     private native void native_writeData(long handler,int mediaTrack, ByteBuffer data, long pts,int size,int flag);
 
+    private native void native_getFrame(long handler,String path,String picPath);
 }
