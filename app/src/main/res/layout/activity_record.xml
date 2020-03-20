@@ -1,96 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Camera.RecordActivity">
 
-    <SurfaceView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/surface_view"
-        />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="60dp"
-        android:id="@+id/linear_music"
-        android:visibility="gone"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:paddingTop="24dp"
         >
 
+
         <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:id="@+id/iv_cancle_music"
-            android:src="@mipmap/ic_close"
-            android:scaleType="centerCrop"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/iv_setting"
+            android:src="@mipmap/ic_setting"
             android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="16dp"
             />
 
-        <TextView
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/iv_change_camera"
+            android:src="@mipmap/ic_camera"
+            android:layout_gravity="right|center_vertical"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="16dp"
+            />
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/surface_view"
+            />
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_music_name"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:text="三零二"
-            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"
+            android:id="@+id/linear_music"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/iv_cancle_music"
+                android:src="@mipmap/ic_close"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_music_name"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:text="三零二"
+                android:layout_gravity="center_vertical"
+                />
+
+
+        </LinearLayout>
+
+        <com.example.asus1.videorecoder.Camera.RecordButtonView
+            android:id="@+id/view_record"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="6dp"
             />
 
 
-    </LinearLayout>
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/iv_change_camera"
-        android:src="@mipmap/ic_camera"
-        android:layout_gravity="right"
-        android:scaleType="center"
-        />
-
-    <com.example.asus1.videorecoder.Camera.RecordButtonView
-        android:id="@+id/view_record"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="6dp"
-        />
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/iv_back"
-        android:src="@mipmap/ic_back"
-        android:scaleType="center"
-        />
-
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/iv_music"
-        android:src="@mipmap/ic_music"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="51dp"
-        android:layout_marginLeft="30dp"
-        android:scaleType="centerCrop"
-        />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_music"
+            android:src="@mipmap/ic_music"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="51dp"
+            android:layout_marginLeft="30dp"
+            android:scaleType="centerCrop"
+            />
 
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/iv_see"
-        android:src="@mipmap/ic_see"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="51dp"
-        android:layout_marginRight="30dp"
-        android:scaleType="centerCrop"
-        />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_see"
+            android:src="@mipmap/ic_see"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="51dp"
+            android:layout_marginRight="30dp"
+            android:scaleType="centerCrop"
+            />
 
-</FrameLayout>
+    </FrameLayout>
+
+
+
+</LinearLayout>

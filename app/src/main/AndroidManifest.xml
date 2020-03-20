@@ -26,8 +26,7 @@
         <service android:name=".music.MusicService" />
 
         <activity android:name=".videomanager.VideoManagerActivity" />
-        <activity android:name=".videomanager.PlayVideoActivity"></activity>
-
+        <activity android:name=".videomanager.PlayVideoActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -39,6 +38,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

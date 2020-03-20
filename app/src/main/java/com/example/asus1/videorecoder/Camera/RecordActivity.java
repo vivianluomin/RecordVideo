@@ -20,16 +20,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.asus1.videorecoder.BaseActivity;
 import com.example.asus1.videorecoder.Controller.RecordPersenter;
 import com.example.asus1.videorecoder.Controller.ViewController;
 import com.example.asus1.videorecoder.Encode.VideoRecordEncode;
 import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
+import com.example.asus1.videorecoder.SettingActivity;
 import com.example.asus1.videorecoder.music.MusicActivity;
 import com.example.asus1.videorecoder.videomanager.VideoManagerActivity;
 
-public class RecordActivity extends AppCompatActivity
+public class RecordActivity extends BaseActivity
         implements SurfaceHolder.Callback ,
         SurfaceTexture.OnFrameAvailableListener,
         OpenGLLifeListener,View.OnClickListener,ViewController{
@@ -42,7 +44,7 @@ public class RecordActivity extends AppCompatActivity
     private OpenGLHelper mOpenGLHelper;
     private ImageView mChangeCamera;
     private RecordButtonView mRecordButtom;
-    private ImageView mBack;
+    //private ImageView mBack;
     private ImageView mMusic;
     private boolean mRecord = false;
     private RecordPersenter mPresenter;
@@ -56,11 +58,19 @@ public class RecordActivity extends AppCompatActivity
     private ImageView mMusicCancle;
     private TextView mMusicName;
     private ImageView mSeeVideo;
+    private ImageView mSetting;
     private static final String TAG = "RecordActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        |View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        |View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        |View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        |View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_record);
         Intent intent = getIntent();
         mRecordSetting = (RecordSetting) intent.getSerializableExtra("setting");
@@ -76,8 +86,6 @@ public class RecordActivity extends AppCompatActivity
         mChangeCamera.setOnClickListener(this);
         mRecordButtom = findViewById(R.id.view_record);
         mRecordButtom.setOnClickListener(this);
-        mBack = findViewById(R.id.iv_back);
-        mBack.setOnClickListener(this);
         mMusic = findViewById(R.id.iv_music);
         mMusic.setOnClickListener(this);
         mMusicLinear = findViewById(R.id.linear_music);
@@ -86,6 +94,8 @@ public class RecordActivity extends AppCompatActivity
         mMusicName = findViewById(R.id.tv_music_name);
         mSeeVideo = findViewById(R.id.iv_see);
         mSeeVideo.setOnClickListener(this);
+        mSetting = findViewById(R.id.iv_setting);
+        mSetting.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
         mMusicThread = new MusicPlayerThread();
@@ -177,11 +187,6 @@ public class RecordActivity extends AppCompatActivity
             case R.id.view_record:
                 setRecord();
                 break;
-
-            case R.id.iv_back:
-                finish();
-                break;
-
             case R.id.iv_music:
                 startActivityForResult(new Intent(RecordActivity.this
                         ,MusicActivity.class),MUSIC_RESULT);
@@ -197,6 +202,11 @@ public class RecordActivity extends AppCompatActivity
                 startActivity(new Intent(RecordActivity.this,
                         VideoManagerActivity.class));
                 break;
+            case R.id.iv_setting:
+                startActivity(new Intent(RecordActivity.this,
+                        SettingActivity.class));
+                break;
+
 
         }
     }

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SettingActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:paddingTop="24dp"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/iv_back"
+            android:src="@mipmap/ic_cancel"
+            android:scaleType="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="设置"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginLeft="50dp"
+            android:textColor="@color/text_black"
+            />
+
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="相机类型："
+        android:textSize="14sp"
+        android:textColor="@color/text_black"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_camera_1"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Camera1"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/text_black"
+            android:layout_gravity="center_vertical"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="16dp"
+            android:switchMinWidth="20dp"
+            android:track="@drawable/switch_track"
+            android:thumb="@drawable/switch_thumb"
+            android:checked="true"
+            android:id="@+id/switch_camera_1"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
+        />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_camera_2"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Camera2"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/text_black"
+            android:layout_gravity="center_vertical"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="16dp"
+            android:switchMinWidth="20dp"
+            android:track="@drawable/switch_track"
+            android:thumb="@drawable/switch_thumb"
+            android:checked="false"
+            android:id="@+id/switch_camera_2"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="合成类型："
+        android:textSize="14sp"
+        android:textColor="@color/text_black"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="16dp"
+        />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_muxer_gpu"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MediaMuxer"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/text_black"
+            android:layout_gravity="center_vertical"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="16dp"
+            android:switchMinWidth="20dp"
+            android:track="@drawable/switch_track"
+            android:thumb="@drawable/switch_thumb"
+            android:checked="true"
+            android:id="@+id/switch_muxer_gpu"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
+        />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_muxer_cpu"
+        android:layout_marginTop="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FFmpegMuxer"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/text_black"
+            android:layout_gravity="center_vertical"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="16dp"
+            android:switchMinWidth="20dp"
+            android:track="@drawable/switch_track"
+            android:thumb="@drawable/switch_thumb"
+            android:checked="false"
+            android:id="@+id/switch_muxer_cpu"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_400"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
+        />
+
+</LinearLayout>
