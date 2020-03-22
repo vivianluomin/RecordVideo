@@ -101,6 +101,21 @@ Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeStopRecord(JNIEnv 
     hand->stopRecord();
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_asus1_videorecoder_OpenGL_OpenGLHelper_nativeChangeFilter(JNIEnv *env,
+                                                                                   jobject instance,
+                                                                                   jlong handler,jint filter){
+
+    OpenGLThread *hand = reinterpret_cast<OpenGLThread *>(handler);
+    if(hand == NULL){
+        return;
+    }
+    hand->changeFilter(filter);
+
+}
+
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 
     jint result = -1;

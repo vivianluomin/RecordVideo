@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:layout_marginTop="10dp"
+       >
+
+
+       <LinearLayout
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:id="@+id/linear_filter_wu"
+           android:orientation="vertical"
+           android:layout_weight="1"
+           >
+
+           <ImageView
+               android:layout_width="50dp"
+               android:layout_height="60dp"
+               android:src="@mipmap/bg_wu"
+               android:scaleType="centerCrop"
+               android:layout_gravity="center"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="原图"
+               android:layout_gravity="center"
+               android:layout_marginTop="4dp"
+               />
+
+       </LinearLayout>
+
+
+
+       <LinearLayout
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:id="@+id/linear_filter_black"
+           android:orientation="vertical"
+           android:layout_weight="1"
+           >
+
+           <ImageView
+               android:layout_width="50dp"
+               android:layout_height="60dp"
+               android:src="@mipmap/bg_black"
+               android:scaleType="centerCrop"
+               android:layout_gravity="center"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="黑白"
+               android:layout_gravity="center"
+               android:layout_marginTop="4dp"
+               />
+
+       </LinearLayout>
+
+
+       <LinearLayout
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:id="@+id/linear_filter_fudiao"
+           android:orientation="vertical"
+           android:layout_weight="1"
+           >
+
+           <ImageView
+               android:layout_width="50dp"
+               android:layout_height="60dp"
+               android:src="@mipmap/bg_fudiao"
+               android:scaleType="centerCrop"
+               android:layout_gravity="center"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="浮雕"
+               android:layout_gravity="center"
+               android:layout_marginTop="4dp"
+               />
+
+       </LinearLayout>
+
+
+       <LinearLayout
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:id="@+id/linear_filter_mohu"
+           android:orientation="vertical"
+           android:layout_weight="1"
+           >
+
+           <ImageView
+               android:layout_width="50dp"
+               android:layout_height="60dp"
+               android:src="@mipmap/bg_mohu"
+               android:scaleType="centerCrop"
+               android:layout_gravity="center"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/tv_filter"
+               android:text="模糊"
+               android:layout_gravity="center"
+               android:layout_marginTop="4dp"
+               />
+
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:id="@+id/linear_filter_mopi"
+           android:orientation="vertical"
+           android:layout_weight="1"
+           >
+
+           <ImageView
+               android:layout_width="50dp"
+               android:layout_height="60dp"
+               android:src="@mipmap/bg_meiyan"
+               android:scaleType="centerCrop"
+               android:layout_gravity="center"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="磨皮"
+               android:layout_gravity="center"
+               android:layout_marginTop="4dp"
+               />
+
+       </LinearLayout>
+
+
+
+   </LinearLayout>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/iv_miss"
+        android:src="@mipmap/ic_arrow_bottom"
+        android:scaleType="center"
+        />
+
+</LinearLayout>

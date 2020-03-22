@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/linear_root"
     tools:context=".Camera.RecordActivity">
 
 
@@ -102,6 +103,17 @@
             android:layout_gravity="bottom"
             android:layout_marginBottom="51dp"
             android:layout_marginLeft="30dp"
+            android:scaleType="centerCrop"
+            />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_filter"
+            android:src="@mipmap/ic_filter"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="51dp"
+            android:layout_marginLeft="80dp"
             android:scaleType="centerCrop"
             />
 

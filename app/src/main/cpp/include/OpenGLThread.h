@@ -53,6 +53,7 @@ public:
     bool threadStart = 0;
     pthread_mutex_t lock;
     bool render = false;
+    bool change_filter = false;
     jmethodID onOpenGLinitSucccess_method;
     jmethodID onOpenGLRunning_method;
     jmethodID setShareEGLContext_method;
@@ -74,6 +75,8 @@ public:
 
     void startRecord();
     void stopRecord();
+
+    void changeFilter(int filter);
 
 };
 

@@ -33,6 +33,12 @@ void*  start(void *gl) {
             pthread_mutex_lock(&glThread->lock);
         }
 
+        if(glThread->change_filter){
+            delete(glThread->drawer);
+            glThread->drawer = glThread->createTextureDrawer(glThread->filter);
+            glThread->change_filter = false;
+        }
+
         env->CallVoidMethod(glThread->openglHepler,glThread->onOpenGLRunning_method);
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -60,6 +66,12 @@ void OpenGLThread::startOpenGLThread(ANativeWindow *nativeWindow) {
 
     window = nativeWindow;
     pthread_create(&pid,NULL,start,this);
+}
+
+
+void OpenGLThread::changeFilter(int filter) {
+    this->filter = filter;
+    change_filter = true;
 }
 
 TextureDrawer* OpenGLThread::createTextureDrawer(int textureType) {

@@ -8,14 +8,20 @@ import java.lang.String;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +36,7 @@ import com.example.asus1.videorecoder.RecordSetting;
 import com.example.asus1.videorecoder.SettingActivity;
 import com.example.asus1.videorecoder.music.MusicActivity;
 import com.example.asus1.videorecoder.videomanager.VideoManagerActivity;
+import com.example.zhouwei.library.CustomPopWindow;
 
 public class RecordActivity extends BaseActivity
         implements SurfaceHolder.Callback ,
@@ -59,6 +66,10 @@ public class RecordActivity extends BaseActivity
     private TextView mMusicName;
     private ImageView mSeeVideo;
     private ImageView mSetting;
+    private ImageView mFilter;
+    private CustomPopWindow mFilterPopWindow;
+    private LinearLayout mRoot;
+
     private static final String TAG = "RecordActivity";
 
     @Override
@@ -72,8 +83,11 @@ public class RecordActivity extends BaseActivity
                         |View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                         |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_record);
-        Intent intent = getIntent();
-        mRecordSetting = (RecordSetting) intent.getSerializableExtra("setting");
+        mRecordSetting = RecordSetting.BUILD()
+                .setFiler(RecordSetting.Filter.normal)
+                .setCameraType(RecordSetting.CameraType.Camera1)
+                .setCameraOri(RecordSetting.CameraOrientation.front)
+                .setMuxerType(RecordSetting.MuxerType.GPU);
         init();
         openCamera();
     }
@@ -81,6 +95,7 @@ public class RecordActivity extends BaseActivity
     private void init(){
         mPresenter = RecordPersenter.getPresenterInstantce();
         mPresenter.setViewController(this);
+        mRoot = findViewById(R.id.linear_root);
         mSurfaceView = findViewById(R.id.surface_view);
         mChangeCamera = findViewById(R.id.iv_change_camera);
         mChangeCamera.setOnClickListener(this);
@@ -96,6 +111,8 @@ public class RecordActivity extends BaseActivity
         mSeeVideo.setOnClickListener(this);
         mSetting = findViewById(R.id.iv_setting);
         mSetting.setOnClickListener(this);
+        mFilter = findViewById(R.id.iv_filter);
+        mFilter.setOnClickListener(this);
         mSurfaceView.getHolder().addCallback(this);
         mOpenGLHelper = new OpenGLHelper(this);
         mMusicThread = new MusicPlayerThread();
@@ -203,12 +220,48 @@ public class RecordActivity extends BaseActivity
                         VideoManagerActivity.class));
                 break;
             case R.id.iv_setting:
-                startActivity(new Intent(RecordActivity.this,
-                        SettingActivity.class));
+               Intent intent =  new Intent(RecordActivity.this,
+                        SettingActivity.class);
+               intent.putExtra("camera",mRecordSetting.mCameraType);
+               intent.putExtra("muxer",mRecordSetting.mMuxerType);
+                startActivityForResult(intent,100);
+                break;
+            case R.id.iv_filter:
+                popuFilter();
                 break;
 
 
         }
+    }
+
+    private void popuFilter(){
+        View contentView = LayoutInflater.from(this).inflate(R.layout.pop_filter,null);
+        //处理popWindow 显示内容
+        handleListView(contentView);
+        //创建并显示popWindow
+        mFilterPopWindow= new CustomPopWindow.PopupWindowBuilder(this)
+                .setView(contentView)
+                .size(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)//显示大小
+                .create()
+                .showAtLocation(mRoot, Gravity.BOTTOM,0,0);
+    }
+
+
+    private void handleListView(View contentView){
+        LinearLayout filter_wu = contentView.findViewById(R.id.linear_filter_wu);
+        filter_wu.setOnClickListener(mPopuClickListener);
+        LinearLayout filter_black = contentView.findViewById(R.id.linear_filter_black);
+        filter_black.setOnClickListener(mPopuClickListener);
+        LinearLayout filter_fudiao = contentView.findViewById(R.id.linear_filter_fudiao);
+        filter_fudiao.setOnClickListener(mPopuClickListener);
+        LinearLayout filter_mohu = contentView.findViewById(R.id.linear_filter_mohu);
+        filter_mohu.setOnClickListener(mPopuClickListener);
+        LinearLayout filter_mopi = contentView.findViewById(R.id.linear_filter_mopi);
+        filter_mopi.setOnClickListener(mPopuClickListener);
+
+        ImageView miss = contentView.findViewById(R.id.iv_miss);
+        miss.setOnClickListener(mPopuClickListener);
+
     }
 
 
@@ -299,6 +352,28 @@ public class RecordActivity extends BaseActivity
             }
             mMusicName.setText(mMusic_name);
             mMusicLinear.setVisibility(View.VISIBLE);
+        }else if(requestCode == 100 && resultCode == RESULT_OK){
+
+            RecordSetting.CameraType cameraType = (RecordSetting.CameraType)
+                    data.getSerializableExtra("camera");
+            RecordSetting.MuxerType muxerType = (RecordSetting.MuxerType)
+                    data.getSerializableExtra("muxer");
+
+            Log.d(TAG, "onActivityResult: "+cameraType+"---"+muxerType);
+
+            if(mRecordSetting.mMuxerType != muxerType){
+                mRecordSetting.mMuxerType = muxerType;
+            }
+
+            if(mRecordSetting.mCameraType != cameraType){
+                mRecordSetting.mCameraType = cameraType;
+                mCamera.stopPreview();
+                mCamera.release();
+                openCamera();
+                mCamera.startPreview(mSurfaceTexture);
+            }
+
+
         }
     }
 
@@ -314,4 +389,57 @@ public class RecordActivity extends BaseActivity
         mOpenGLHelper.deatoryOpenGL();
         super.onDestroy();
     }
+
+
+
+
+    private View.OnClickListener mPopuClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            RecordSetting.Filter filter;
+            switch (v.getId()){
+                case R.id.linear_filter_wu:
+                    if(mRecordSetting.mFiler != RecordSetting.Filter.normal){
+                        filter = RecordSetting.Filter.normal;
+                        mRecordSetting.mFiler = RecordSetting.Filter.normal;
+                        mOpenGLHelper.changeFilter(filter);
+                    }
+                    break;
+                case R.id.linear_filter_black:
+                    if(mRecordSetting.mFiler != RecordSetting.Filter.dark){
+                        filter = RecordSetting.Filter.dark;
+                        mRecordSetting.mFiler = RecordSetting.Filter.dark;
+                        mOpenGLHelper.changeFilter(filter);
+                    }
+                    break;
+                case R.id.linear_filter_fudiao:
+                    if(mRecordSetting.mFiler != RecordSetting.Filter.fudiao){
+                        filter = RecordSetting.Filter.fudiao;
+                        mRecordSetting.mFiler = RecordSetting.Filter.fudiao;
+                        mOpenGLHelper.changeFilter(filter);
+                    }
+
+                    break;
+                case R.id.linear_filter_mohu:
+                    if(mRecordSetting.mFiler != RecordSetting.Filter.mohu){
+                        filter = RecordSetting.Filter.mohu;
+                        mRecordSetting.mFiler = RecordSetting.Filter.mohu;
+                        mOpenGLHelper.changeFilter(filter);
+                    }
+
+                    break;
+                case R.id.linear_filter_mopi:
+                    if(mRecordSetting.mFiler != RecordSetting.Filter.mopi){
+                        filter = RecordSetting.Filter.mopi;
+                        mRecordSetting.mFiler = RecordSetting.Filter.mopi;
+                        mOpenGLHelper.changeFilter(filter);
+                    }
+
+                    break;
+                case R.id.iv_miss:
+                    mFilterPopWindow.dissmiss();
+            }
+
+        }
+    };
 }

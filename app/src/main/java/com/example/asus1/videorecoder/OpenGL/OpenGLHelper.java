@@ -44,6 +44,22 @@ public class OpenGLHelper {
         mHandler = nativeInitOpenGL(surface,fi,width,height);
     }
 
+    public void changeFilter(RecordSetting.Filter filter){
+        int fi = 0;
+        if(filter == RecordSetting.Filter.normal){
+            fi = 0;
+        }else if(filter == RecordSetting.Filter.dark){
+            fi = 1;
+        }else if(filter == RecordSetting.Filter.fudiao){
+            fi = 2;
+        }else if(filter == RecordSetting.Filter.mohu){
+            fi = 3;
+        }else if(filter == RecordSetting.Filter.mopi){
+            fi = 4;
+        }
+        nativeChangeFilter(mHandler,fi);
+    }
+
     public void render(int textureId,float[] mat){
         if(mHandler != 0){
             render(mHandler,textureId,mat);
@@ -99,4 +115,6 @@ public class OpenGLHelper {
     private native void nativeStartRecord(long handler);
 
     private native void nativeStopRecord(long handler);
+
+    private native void nativeChangeFilter(long handler,int filter);
 }
