@@ -2,22 +2,15 @@ package com.example.asus1.videorecoder.Camera;
 
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
-import android.media.MediaRecorder;
-import android.opengl.EGLContext;
+
 import java.lang.String;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
-import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -26,14 +19,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.asus1.videorecoder.BaseActivity;
+import com.example.asus1.videorecoder.UI.BaseActivity;
 import com.example.asus1.videorecoder.Controller.RecordPersenter;
 import com.example.asus1.videorecoder.Controller.ViewController;
 import com.example.asus1.videorecoder.Encode.VideoRecordEncode;
 import com.example.asus1.videorecoder.OpenGL.OpenGLHelper;
 import com.example.asus1.videorecoder.R;
 import com.example.asus1.videorecoder.RecordSetting;
-import com.example.asus1.videorecoder.SettingActivity;
+import com.example.asus1.videorecoder.UI.SettingActivity;
 import com.example.asus1.videorecoder.music.MusicActivity;
 import com.example.asus1.videorecoder.videomanager.VideoManagerActivity;
 import com.example.zhouwei.library.CustomPopWindow;
@@ -87,7 +80,10 @@ public class RecordActivity extends BaseActivity
                 .setFiler(RecordSetting.Filter.normal)
                 .setCameraType(RecordSetting.CameraType.Camera1)
                 .setCameraOri(RecordSetting.CameraOrientation.front)
-                .setMuxerType(RecordSetting.MuxerType.GPU);
+                .setMuxerType(RecordSetting.MuxerType.GPU)
+                .setMime_type(VideoRecordEncode.MIME_TYPE_264)
+                .setFileType(RecordSetting.FileType.MP4);
+
         init();
         openCamera();
     }
@@ -224,6 +220,8 @@ public class RecordActivity extends BaseActivity
                         SettingActivity.class);
                intent.putExtra("camera",mRecordSetting.mCameraType);
                intent.putExtra("muxer",mRecordSetting.mMuxerType);
+               intent.putExtra("file",mRecordSetting.mFileType);
+               intent.putExtra("mime",mRecordSetting.mime_type);
                 startActivityForResult(intent,100);
                 break;
             case R.id.iv_filter:
@@ -358,12 +356,18 @@ public class RecordActivity extends BaseActivity
                     data.getSerializableExtra("camera");
             RecordSetting.MuxerType muxerType = (RecordSetting.MuxerType)
                     data.getSerializableExtra("muxer");
+            RecordSetting.FileType fileType = (RecordSetting.FileType)
+                    data.getSerializableExtra("file");
+            String mime = (String)data.getStringExtra("mime");
 
-            Log.d(TAG, "onActivityResult: "+cameraType+"---"+muxerType);
+            Log.d(TAG, "onActivityResult: "+cameraType+"---"+muxerType+"----"+fileType+"---"+mime);
 
             if(mRecordSetting.mMuxerType != muxerType){
                 mRecordSetting.mMuxerType = muxerType;
             }
+
+            mRecordSetting.mFileType = fileType;
+            mRecordSetting.mime_type = mime;
 
             if(mRecordSetting.mCameraType != cameraType){
                 mRecordSetting.mCameraType = cameraType;

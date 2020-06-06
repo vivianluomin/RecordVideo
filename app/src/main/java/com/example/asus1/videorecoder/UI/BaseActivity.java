@@ -1,4 +1,4 @@
-package com.example.asus1.videorecoder;
+package com.example.asus1.videorecoder.UI;
 
 import android.graphics.Color;
 import android.os.Build;

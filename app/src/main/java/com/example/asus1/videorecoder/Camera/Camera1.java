@@ -1,14 +1,12 @@
 package com.example.asus1.videorecoder.Camera;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Surface;
 
-import com.example.asus1.videorecoder.BaseActivity;
 import com.example.asus1.videorecoder.RecordSetting;
 
 import java.io.IOException;

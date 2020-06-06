@@ -53,6 +53,10 @@ public class VideoManagerAdapter extends RecyclerView.Adapter<VideoManagerHolder
     @Override
     public int getItemCount() {
         mHight = mModelList.size()/3;
+        int left = mModelList.size()%3;
+        if(left > 0){
+            mHight++;
+        }
         if(mHight == 0 && mModelList.size()>0){
             mHight = 1;
         }

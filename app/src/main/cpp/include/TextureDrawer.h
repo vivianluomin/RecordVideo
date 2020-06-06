@@ -22,7 +22,6 @@
 
 class TextureDrawer{
 
-
 public:
     TextureDrawer();
     void initVertexData();

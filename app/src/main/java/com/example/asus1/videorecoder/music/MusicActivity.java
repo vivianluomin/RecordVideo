@@ -1,27 +1,21 @@
 package com.example.asus1.videorecoder.music;
 
 import android.content.ComponentName;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.ParcelUuid;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.asus1.videorecoder.BaseActivity;
+import com.example.asus1.videorecoder.UI.BaseActivity;
 import com.example.asus1.videorecoder.R;
 
 import java.util.ArrayList;

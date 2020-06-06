@@ -103,18 +103,13 @@ bool OpenGLThread::initOpenGlES(EGLContext shareContext) {
         LOGE("eglGetDisplay error");
         return false;
     }
-
     LOGE("display create success");
-
     EGLint *version = new EGLint[2];
     if(!eglInitialize(display,&version[0],&version[1])){
         LOGE("eglInitialize error");
         return false;
     }
-
     LOGE("eglInit create success");
-
-
     //配置选项
     EGLint configAttribs[] = {
             EGL_BUFFER_SIZE,32,
@@ -126,25 +121,21 @@ bool OpenGLThread::initOpenGlES(EGLContext shareContext) {
             EGL_SURFACE_TYPE,EGL_WINDOW_BIT,
             EGL_NONE
     };
-
-    // 根据所需的参数获取符合该参数的config_size，主要是解决有些手机eglChooseConfig失败的兼容性问题
+    // 根据所需的参数获取符合该参数的config_size，
+    // 主要是解决有些手机eglChooseConfig失败的兼容性问题
     EGLint num_config;
-
     //根据获取到的config_size得到eglConfig
     EGLConfig  eglConfig;
     if(!eglChooseConfig(display,configAttribs,&eglConfig,1,&num_config)){
         LOGE("eglChooseConfig error");
         return -1;
     }
-
     LOGE("eglChooseConfig success ");
-
     //4. 创建egl上下文 eglCreateContext
     const EGLint attrib_ctx_list[] = {
             EGL_CONTEXT_CLIENT_VERSION, 2,
             EGL_NONE
     };
-
     if (shareContext == EGL_NO_CONTEXT){
         context = eglCreateContext(display,eglConfig,NULL,attrib_ctx_list);
     } else{
@@ -154,26 +145,20 @@ bool OpenGLThread::initOpenGlES(EGLContext shareContext) {
         LOGE("elgCreateContext error");
         return false;
     }
-
     LOGE("context create success ");
-
     surface = eglCreateWindowSurface(display,eglConfig,window,NULL);
     if(surface == EGL_NO_SURFACE){
         LOGE("eglCreateWindowSurface error");
         return false;
     }
-
     eglQuerySurface(display,surface,NULL,&width);
     eglQuerySurface(display,surface,NULL,&height);
-
     LOGE("window surface create success ");
-
     //绑定eglContext和surface到display
     if(eglMakeCurrent(display,surface,surface,context)== EGL_FALSE){
         LOGE("eglMakeCurrent error");
         return false;
     }
-
     LOGE("make current  success ");
     return true;
 }

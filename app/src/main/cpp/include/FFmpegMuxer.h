@@ -49,7 +49,7 @@ public:
 class FFmpegMuxer {
 
 public:
-    FFmpegMuxer(const char *path);
+    FFmpegMuxer(const char *path, const char* mime);
     void writeData(int mediaTrack,uint8_t *data,BufferInfo *info);
     void writeData(int mediaTrack,uint8_t *data, long pts,int size,int flag);
     void stop();
@@ -61,6 +61,7 @@ public:
 
 private:
     const char* mPath;
+    const char* mime;
     AVStream *mVideoStream;
     AVStream *mAudioStream;
     AVFormatContext *mFormateContext = NULL;

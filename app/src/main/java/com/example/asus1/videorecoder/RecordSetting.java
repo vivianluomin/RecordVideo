@@ -29,11 +29,20 @@ public class RecordSetting implements Serializable{
         CPU
     }
 
+    public enum FileType{
+        MP4,
+        AVI,
+        FLV,
+        MKV
+    }
+
 
     public Filter mFiler;
     public CameraType mCameraType;
     public CameraOrientation mCameraOri;
     public MuxerType mMuxerType;
+    public FileType mFileType;
+    public String mime_type;
 
     public static RecordSetting BUILD(){
         return new RecordSetting();
@@ -60,5 +69,13 @@ public class RecordSetting implements Serializable{
         return this;
    }
 
+    public RecordSetting setMime_type(String mime_type) {
+        this.mime_type = mime_type;
+        return this;
+    }
 
+    public RecordSetting setFileType(FileType fileType) {
+        this.mFileType = fileType;
+        return this;
+    }
 }

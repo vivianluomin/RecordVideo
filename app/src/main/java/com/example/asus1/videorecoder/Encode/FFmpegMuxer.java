@@ -22,16 +22,38 @@ public class FFmpegMuxer {
 
     private long mHandler;
     private String mPath;
+    private RecordSetting mRecordingSetting;
 
     private static final String TAG = "FFmpegMuxer";
+
+    public FFmpegMuxer(RecordSetting recordSetting){
+        mRecordingSetting = recordSetting;
+        init();
+    }
 
     public FFmpegMuxer(){
         init();
     }
 
     private void init(){
-        mPath  = VideoMediaMuxer.getCaptureFile(Environment.DIRECTORY_MOVIES,VideoMediaMuxer.EXT).toString();
-        mHandler = native_init(mPath);
+        String ext = ".mp4";
+        if(mRecordingSetting != null){
+            switch (mRecordingSetting.mFileType){
+                case FLV:
+                    ext = ".flv";
+                    break;
+                case MKV:
+                    ext = ".mkv";
+                    break;
+                case AVI:
+                    ext = ".avi";
+                    break;
+            }
+        }
+        Log.d(TAG, "init: "+ext);
+        mPath  = VideoMediaMuxer.getCaptureFile(Environment.DIRECTORY_MOVIES,ext).toString();
+        Log.d(TAG, "init: "+mPath);
+        mHandler = native_init(mPath,ext.substring(1));
     }
 
     public void write(int mediaTrack, ByteBuffer data, MediaCodec.BufferInfo info){
@@ -79,7 +101,7 @@ public class FFmpegMuxer {
         native_render(mHandler,textId,mvp);
     }
 
-    private native long native_init(String path);
+    private native long native_init(String path,String mime);
 
     private native void native_initFFmpeg(long handler);
 

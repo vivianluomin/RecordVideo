@@ -5,8 +5,9 @@
 #include "include/FFmpegMuxer.h"
 using namespace std;
 
-FFmpegMuxer::FFmpegMuxer(const char* path) {
+FFmpegMuxer::FFmpegMuxer(const char* path, const char* mi) {
     mPath = path;
+    mime = mi;
 }
 
 
@@ -29,7 +30,7 @@ void FFmpegMuxer::initFFmpeg(){
     int videoIndex = 0;
     int audioIndex  = 0;
     //创建AVFormatContext
-    avformat_alloc_output_context2(&mFormateContext,NULL,"mp4",mPath);
+    avformat_alloc_output_context2(&mFormateContext,NULL,mime,mPath);
     mFormateContext->oformat->video_codec = AV_CODEC_ID_H264;
     mFormateContext->oformat->audio_codec = AV_CODEC_ID_AAC;
     av_dump_format(mFormateContext,0,mPath,1);
@@ -295,11 +296,11 @@ void FFmpegMuxer::getFirstFrame(const char *filePath, const char *picPath) {
     struct SwsContext *sws_ctx = NULL;
 
     sws_ctx = sws_getContext(pCodecCtx->width,
-                             pCodecCtx->height,pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24,
+                             pCodecCtx->height,pCodecCtx->pix_fmt, pCodecCtx->width,
+                             pCodecCtx->height, AV_PIX_FMT_RGB24,
                              SWS_BICUBIC, NULL, NULL, NULL);
 
     int i = 0;
-
     while (int x = av_read_frame(pFormatCtx,packet)>=0){
         if(packet->stream_index == videoStream){
             avcodec_decode_video2(pCodecCtx,pFrame,
@@ -317,37 +318,28 @@ void FFmpegMuxer::getFirstFrame(const char *filePath, const char *picPath) {
 
         av_packet_unref(packet);
     }
-
     av_free(buffer);
     av_frame_free(&pFrameRGB);
-
     av_frame_free(&pFrame);
-
     avcodec_close(pCodecCtx);
     avcodec_close(pCodecCtxOrig);
-
     avformat_close_input(&pFormatCtx);
-
-
 }
 
 
 
-void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int height, const char *name) {
-
+void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width,
+                             int height, const char *name) {
         // 分配AVFormatContext对象
         AVFormatContext* pFormatCtx = avformat_alloc_context();
-
         // 设置输出文件格式
         pFormatCtx->oformat = av_guess_format("mjpeg", NULL, NULL);
-
         // 创建并初始化一个和该url相关的AVIOContext
         if (avio_open(&pFormatCtx->pb, name, AVIO_FLAG_READ_WRITE) < 0)
         {
             LOGE("Couldn't open output file");
             return ;
         }
-
         // 构建一个新stream
         AVStream* pAVStream = avformat_new_stream(pFormatCtx, 0);
         if (pAVStream == NULL)
@@ -355,10 +347,8 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
             LOGE("Frame2JPG::avformat_new_stream error.");
             return ;
         }
-
         // 设置该stream的信息
         AVCodecContext* pCodecCtx = pAVStream->codec;
-
         pCodecCtx->codec_id = pFormatCtx->oformat->video_codec;
         pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
         pCodecCtx->pix_fmt = AV_PIX_FMT_YUVJ420P;
@@ -366,7 +356,6 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
         pCodecCtx->height = height;
         pCodecCtx->time_base.num = 1;
         pCodecCtx->time_base.den = 25;
-
         // 查找解码器
         AVCodec* pCodec = avcodec_find_encoder(pCodecCtx->codec_id);
         if (!pCodec)
@@ -380,7 +369,6 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
             LOGE("Could not open codec.");
             return ;
         }
-
         //Write Header
         int ret = avformat_write_header(pFormatCtx, NULL);
         if (ret < 0)
@@ -388,10 +376,7 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
             LOGE("avformat_write_header() error.\n");
             return ;
         }
-
         int y_size = pCodecCtx->width * pCodecCtx->height;
-
-        //Encode
         // 给AVPacket分配足够大的空间
         AVPacket pkt;
         av_new_packet(&pkt, y_size * 3);
@@ -403,7 +388,6 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
             LOGE("avcodec_encode_video2() error.\n");
             return ;
         }
-
         if (got_picture == 1)
         {
             ret = av_write_frame(pFormatCtx, &pkt);
@@ -431,11 +415,12 @@ void FFmpegMuxer::SaveFrame(AVPacket *packet,AVFrame *pFrame, int width, int hei
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_example_asus1_videorecoder_Encode_FFmpegMuxer_native_1init(JNIEnv *env,
-jobject instance,jstring path) {
+jobject instance,jstring path,jstring mime) {
 
     const char* p = env->GetStringUTFChars(path,NULL);
+    const char* mie = env->GetStringUTFChars(mime,NULL);
 
-    FFmpegMuxer *muxer = new FFmpegMuxer(p);
+    FFmpegMuxer *muxer = new FFmpegMuxer(p,mie);
 
     LOGD("muxer %d",muxer);
 

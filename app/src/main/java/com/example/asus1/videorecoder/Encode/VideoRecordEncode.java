@@ -16,7 +16,8 @@ import java.nio.ByteBuffer;
 public class VideoRecordEncode implements Runnable {
 
     private MediaCodec mViedeoEncode;
-    public static final  String MIME_TYPE = "video/avc";
+    public static final  String MIME_TYPE_265 = "video/hevc";
+    public static final String MIME_TYPE_264 = "video/avc";
     public static final int FRAME_RATE = 25; //帧率
     public static final float BPP = 0.25f; //位深度
     private Surface mSurface;
@@ -41,15 +42,18 @@ public class VideoRecordEncode implements Runnable {
     private VideoMediaMuxer mMuxer;
 
     private boolean mMuxerStart = false;
+    private String MIME_TYPE = "video/avc";
 
     private onFramPrepareLisnter mPrepareLisnter;
 
-    public VideoRecordEncode(VideoMediaMuxer muxer, onFramPrepareLisnter prepareLisnter, int width, int height) {
+    public VideoRecordEncode(VideoMediaMuxer muxer, onFramPrepareLisnter prepareLisnter,
+                             int width, int height,String mime_type) {
         mWidth = width;
         mHeight = height;
         mPrepareLisnter = prepareLisnter;
         mMuxer = muxer;
         mBfferInfo = new MediaCodec.BufferInfo();
+        MIME_TYPE = mime_type;
         mHandler = RenderHandler.createRenderHandler(mMuxer.mFFmepgMuxer,mMuxer.mRecordSetting.mFiler);
         synchronized (mSync){
             new Thread(this).start();
@@ -124,7 +128,6 @@ public class VideoRecordEncode implements Runnable {
 
     public boolean onFrameAvaliable(int textId,float[] stMatrix){
         Log.d(TAG, "onFrameAvaliable: ");
-
         synchronized (mSync){
             if(!mIsCaturing||mLocalRquestStop){
                 return false;

@@ -41,7 +41,7 @@ public class VideoMediaMuxer implements ModelController {
 
         mOutputPath = getCaptureFile(Environment.DIRECTORY_MOVIES,EXT).toString();
         mRecordSetting = recordSetting;
-        mFFmepgMuxer = new FFmpegMuxer();
+        mFFmepgMuxer = new FFmpegMuxer(mRecordSetting);
         if(mRecordSetting.mMuxerType == RecordSetting.MuxerType.GPU){
             mMediaMuxer = new MediaMuxer(mOutputPath,MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         }else {
@@ -87,7 +87,7 @@ public class VideoMediaMuxer implements ModelController {
     public void startRecording(){
             //开始录制
             mVideoEncode = new
-                    VideoRecordEncode(this,lisnter,1280, 720);
+                    VideoRecordEncode(this,lisnter,1280, 720,mRecordSetting.mime_type);
             mAudioEndoe = new AudioRecordEncode(this);
             //判断有几个MediaCodec
             this.addEncode(mVideoEncode,mAudioEndoe);

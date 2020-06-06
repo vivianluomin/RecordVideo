@@ -1,4 +1,4 @@
-package com.example.asus1.videorecoder;
+package com.example.asus1.videorecoder.UI;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus1.videorecoder.Camera.RecordActivity;
+import com.example.asus1.videorecoder.R;
+import com.example.asus1.videorecoder.RecordSetting;
 
 import java.util.ArrayList;
 import java.util.List;

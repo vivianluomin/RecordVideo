@@ -1,12 +1,9 @@
 package com.example.asus1.videorecoder.videomanager;
 
-import android.arch.lifecycle.ViewModel;
-import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.asus1.videorecoder.BaseActivity;
+import com.example.asus1.videorecoder.UI.BaseActivity;
 import com.example.asus1.videorecoder.Encode.FFmpegMuxer;
 import com.example.asus1.videorecoder.Encode.VideoMediaMuxer;
 import com.example.asus1.videorecoder.R;
@@ -98,7 +95,7 @@ public class VideoManagerActivity extends BaseActivity implements Handler.Callba
             ArrayList<VideoModel> models = new ArrayList<>();
             for(int i = 0;i<files.length;i++){
                 String src = new File(file,files[i]).toString();
-                if (!src.endsWith("mp4")){
+                if (!(src.endsWith("mp4")||src.endsWith(".avi")||src.endsWith(".flv")||src.endsWith(".mkv"))){
                     continue;
                 }
                 Log.d(TAG, "run: "+src);
